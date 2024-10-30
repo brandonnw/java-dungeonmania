@@ -21,9 +21,10 @@ PLAN:
 Strategy Pattern -
 Identify different enemy movement strategies:
     1. Mercenary
-        a. allied (ally movement)
+        a. allied (allied movement)
         b. invisible (random movement)
         c. invincible (run away movement)
+        d. hostile (hostile movement)
 import dungeonmania.entities.Player;
     2. ZombieToast
         a. random (random movement)
@@ -51,8 +52,20 @@ What new classes/packages you will need to create
             ii. RunAwayMovement
             iii. AlliedMovement
             iv. CirclingMovement
+            v. HostileMovement
     2. enemyMovement Package
         This will have all the classes and interfaces for the Strategy Pattern
+
+Brief overview:
+Since the repeated code between Mercenary and ZombieToast were that of movement, we decided that there had to be a way to abstract the code so that both classes could share the same logic. Analysing all the other enemy entities made us realise that we could use a Strategy Pattern where each type of movement was a strategy.
+
+1. Implement the MovementStrategy Interface
+    In this interface we would have the move method that all other strategies had to implement.
+2. Movement Strategies
+    Then for every single movement strategy, we had to refactor the code into a new classes that handled each movement logic.
+3. Refactoring enemy classes
+    After the movement strategies were implemented, we had to refactor the enemy classes so that they used the strategy classes we created. Each enemy class will have a MovementStrategy field which will determine how that enemy moves.
+
 
 ### b) Pattern Analysis
 
