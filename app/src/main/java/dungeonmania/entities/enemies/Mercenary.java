@@ -78,6 +78,11 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
         allied = true;
         movementType = new AlliedMovement();
         bribe(player);
+
+        if (Position.isAdjacent(player.getPosition(), getPosition())) {
+            ((AlliedMovement) movementType).setAdjacentToPlayer(true);
+        }
+
     }
 
     @Override
