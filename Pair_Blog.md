@@ -8,15 +8,50 @@
 
 > i. Look inside src/main/java/dungeonmania/entities/enemies. Where can you notice an instance of repeated code? Note down the particular offending lines/methods/fields.
 
-[Answer]
+The repeated code occurs in the Mercenary.java and ZombieToast.java files. Within these files, both enemy entities have the type same movement when the player has an invincibility buff. Line 111-136 of Mercenary.java and line 41-67 of ZombieToast.java. Furthermore, random movement is also shared between these two entities. Line 99-108 of Mercenary.java and line 32-38, though there are slight differences in the way they are implemented. An example would be in ZombieToast.java, where moving is done outside the switch case, while in Mercenary.java it is done inside and out.
 
 > ii. What Design Pattern could be used to improve the quality of the code and avoid repetition? Justify your choice by relating the scenario to the key characteristics of your chosen Design Pattern.
 
-[Answer]
+A Strategy design pattern can be used to improve the quality of code to avoid repetition because each movement type is a "Strategy" option that an entity can choose. Therefore, classes can be made for each strategy and entities can choose which strategy they implement depending on their guidelines. This also allows for entities to share the same type of movement if this is possible.
+
+Applying this to the scenario, both the mercenary and zombietoast entities have the ability to move randomly or away from the player. Thus, the repeated code should be abstracted into a specific class which handles the logic of this specified movement strategy.
 
 > iii. Using your chosen Design Pattern, refactor the code to remove the repetition.
+PLAN:
+Strategy Pattern -
+Identify different enemy movement strategies:
+    1. Mercenary
+        a. allied (ally movement)
+        b. invisible (random movement)
+        c. invincible (run away movement)
+    2. ZombieToast
+        a. random (random movement)
+        b. runAway (run away movement)
+    3. Spider
+        a. default (circling movement)
 
-[Briefly explain what you did]
+What fields/methods you will need to add/change in a class:
+    Fields -
+        Remove
+            movementType (mercenary and zombietoast)
+        Add:
+            private MovementStrategy movementType
+    Methods -
+        Move:
+            Mercenary
+            Spider
+            ZombieToast
+
+
+What new classes/packages you will need to create
+    1. MovementStrategy Interface
+        a. Strategy Classes
+            i.  RandomMovement
+            ii. RunAwayMovement
+            iii. AlliedMovement
+            iv. CirclingMovement
+    2. enemyMovement Package
+        This will have all the classes and interfaces for the Strategy Pattern
 
 ### b) Pattern Analysis
 
