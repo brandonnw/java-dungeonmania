@@ -24,6 +24,7 @@ Identify different enemy movement strategies:
         a. allied (ally movement)
         b. invisible (random movement)
         c. invincible (run away movement)
+import dungeonmania.entities.Player;
     2. ZombieToast
         a. random (random movement)
         b. runAway (run away movement)

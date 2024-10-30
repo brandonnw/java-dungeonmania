@@ -1,9 +1,5 @@
 package dungeonmania.entities.enemies;
 
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
 import dungeonmania.entities.Entity;
@@ -14,8 +10,12 @@ import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.InvisibilityPotion;
 import dungeonmania.entities.collectables.potions.Potion;
+import dungeonmania.entities.enemies.enemyMovement.AlliedMovement;
+import dungeonmania.entities.enemies.enemyMovement.HostileMovement;
+import dungeonmania.entities.enemies.enemyMovement.MovementStrategy;
+import dungeonmania.entities.enemies.enemyMovement.RandomMovement;
+import dungeonmania.entities.enemies.enemyMovement.RunAwayMovement;
 import dungeonmania.map.GameMap;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class Mercenary extends Enemy implements Interactable, PotionListener {
@@ -30,9 +30,8 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
     private double allyAttack;
     private double allyDefence;
     private boolean allied = false;
-    private boolean isAdjacentToPlayer = false;
 
-    private String movementType = "hostile";
+    private MovementStrategy movementType;
 
     public Mercenary(Position position, double health, double attack, int bribeAmount, int bribeRadius,
             double allyAttack, double allyDefence) {
@@ -41,6 +40,7 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
         this.bribeRadius = bribeRadius;
         this.allyAttack = allyAttack;
         this.allyDefence = allyDefence;
+        this.movementType = new HostileMovement();
     }
 
     public boolean isAllied() {
@@ -76,72 +76,13 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
     @Override
     public void interact(Player player, Game game) {
         allied = true;
-        movementType = "allied";
+        movementType = new AlliedMovement();
         bribe(player);
-        if (!isAdjacentToPlayer && Position.isAdjacent(player.getPosition(), getPosition()))
-            isAdjacentToPlayer = true;
     }
 
     @Override
     public void move(Game game) {
-        Position nextPos = null;
-        GameMap map = game.getMap();
-        Player player = game.getPlayer();
-        switch (movementType) {
-        case "allied":
-            nextPos = isAdjacentToPlayer ? player.getPreviousDistinctPosition()
-                    : map.dijkstraPathFind(getPosition(), player.getPosition(), this);
-            if (!isAdjacentToPlayer && Position.isAdjacent(player.getPosition(), nextPos))
-                isAdjacentToPlayer = true;
-            break;
-        case "invisible":
-            // Move random
-            Random randGen = new Random();
-            List<Position> pos = getPosition().getCardinallyAdjacentPositions();
-            pos = pos.stream().filter(p -> map.canMoveTo(this, p)).collect(Collectors.toList());
-            if (pos.size() == 0) {
-                nextPos = getPosition();
-                map.moveTo(this, nextPos);
-            } else {
-                nextPos = pos.get(randGen.nextInt(pos.size()));
-                map.moveTo(this, nextPos);
-            }
-            break;
-        case "invincible":
-            Position plrDiff = Position.calculatePositionBetween(map.getPlayer().getPosition(), getPosition());
-            Position moveX = (plrDiff.getX() >= 0) ? Position.translateBy(getPosition(), Direction.RIGHT)
-                    : Position.translateBy(getPosition(), Direction.LEFT);
-            Position moveY = (plrDiff.getY() >= 0) ? Position.translateBy(getPosition(), Direction.DOWN)
-                    : Position.translateBy(getPosition(), Direction.UP);
-            Position offset = getPosition();
-            if (plrDiff.getY() == 0 && map.canMoveTo(this, moveX))
-                offset = moveX;
-            else if (plrDiff.getX() == 0 && map.canMoveTo(this, moveY))
-                offset = moveY;
-            else if (Math.abs(plrDiff.getX()) >= Math.abs(plrDiff.getY())) {
-                if (map.canMoveTo(this, moveX))
-                    offset = moveX;
-                else if (map.canMoveTo(this, moveY))
-                    offset = moveY;
-                else
-                    offset = getPosition();
-            } else {
-                if (map.canMoveTo(this, moveY))
-                    offset = moveY;
-                else if (map.canMoveTo(this, moveX))
-                    offset = moveX;
-                else
-                    offset = getPosition();
-            }
-            nextPos = offset;
-            break;
-        case "hostile":
-            nextPos = map.dijkstraPathFind(getPosition(), player.getPosition(), this);
-            break;
-        default:
-            break;
-        }
-        map.moveTo(this, nextPos);
+        movementType.move(game, this);
     }
 
     @Override
@@ -162,9 +103,9 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
             return;
 
         if (potion instanceof InvisibilityPotion)
-            movementType = "invisible";
+            movementType = new RandomMovement();
         if (potion instanceof InvincibilityPotion)
-            movementType = "invincible";
+            movementType = new RunAwayMovement();
     }
 
     @Override
@@ -172,6 +113,6 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
         if (allied)
             return;
 
-        movementType = "hostile";
+        movementType = new HostileMovement();
     }
 }
