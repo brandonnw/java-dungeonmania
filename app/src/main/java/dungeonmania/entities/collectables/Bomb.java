@@ -68,6 +68,16 @@ public class Bomb extends InventoryItem {
         return state;
     }
 
+    public void activate(GameMap map) {
+        int x = getPosition().getX();
+        int y = getPosition().getY();
+        for (int i = x - this.radius; i <= x + this.radius; i++) {
+            for (int j = y - this.radius; j <= y + this.radius; j++) {
+                map.destroyEntitiesOnPosition(i, j);
+            }
+        }
+    }
+
     @Override
     public BattleStatistics applyBuff(BattleStatistics origin) {
         return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, false, false));

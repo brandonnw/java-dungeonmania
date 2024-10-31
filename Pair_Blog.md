@@ -69,7 +69,7 @@ Since the repeated code between Mercenary and ZombieToast were that of movement,
 
 ### b) Pattern Analysis
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/3)
 
 > i. Identify one place where the State Pattern is present in the codebase. Do you think this is an appropriate use of the State Pattern?
 
@@ -135,11 +135,24 @@ Overall, our refactored code mainly focused on removing the need for implementin
 
 > i. What code smell is present in the above snippet?
 
-[Answer]
+The code smell present in the above snippet involves violating the Single Responsibility Principle (SRP). This is because, the switch class should mainly only be responsible for handling behaviours which concern itself. For instance, it currently handles functionalities such as activation and deactivation when a boulder moves on top of it and managing bomb subscriptions. However, the switch class should not be responsible for calculating the radius of a bomb's detonation and subsequently destroying the entities within that radius. That behaviour should naturally be handled by the bomb class, as it represents the core functionality of a bomb’s explosion mechanics, including calculating its blast radius and determining which entities are affected within that area.
 
 > ii. Refactor the code to resolve the smell and underlying problem causing it.
 
-[Briefly explain what you did]
+What fields/methods you will need to add/change in a class:
+    Switch.java
+        Methods -
+            Change:
+                public void activateBombs(GameMap map)
+    
+    Bomb.java
+        Methods -
+            Add:
+                public void activate(GameMap map)
+
+
+To resolve this code smell the first step was to figure out a way to move the logic for bomb activation into the bomb class itself, as this is a principal behaviour of a bomb and hence is not relevant to the switch class. Therefore, first a method in bomb named "activate" was created, and it accepted the map argument. Essentially, this method is the same as the original "activateBomb" method in Switch.java, however it removed the logic for iterating through the bombs subscribed to the switch's list. After creating a method in the bomb class to store the detonation and destroying logic, the switch method was modified by having the sole responsibility of looping through the array of subscribed bombs, and calling the newly-made "activate" method in the bomb class. This would ensure that the functionality of the original "activateBomb" method could be achieved whilst also ensuring SRP through abstracting the specific logic for bomb activation into the more suitable bomb class.
+
 
 ### e) Open-Closed Goals
 
