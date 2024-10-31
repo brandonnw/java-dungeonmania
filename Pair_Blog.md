@@ -4,7 +4,7 @@
 
 ### a) From DRY to Design Patterns
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/2)
 
 > i. Look inside src/main/java/dungeonmania/entities/enemies. Where can you notice an instance of repeated code? Note down the particular offending lines/methods/fields.
 
@@ -73,13 +73,49 @@ Since the repeated code between Mercenary and ZombieToast were that of movement,
 
 > i. Identify one place where the State Pattern is present in the codebase. Do you think this is an appropriate use of the State Pattern?
 
-[Answer]
+A notable state pattern in the codebase occurs in the logic for player states. Particularly, the folder named "playerState" encapsulates the abstract state class, and the different states which a player can be in depending on whether a potion is active or not. Additionally, the Player.java function implements the logic for transitioning this state pattern mainly in the triggerNext method. However, we believe that this State Pattern has not been appropriately used. This is mainly because there are no major alterations in behaviour when the internal state for player changes. For instance, when the player transitions from base state to invincible, the player's behaviour doesn't change, but rather the behaviour of the potionListeners changes. 
+
+Hence, there is an observer pattern implemented for the potionListeners, notifying them and updating their behaviour when the internal state of player changes. As a result, this State Pattern is mostly redundant, and the codebase can operate more efficiently and just as effectively without it.
+
 
 > ii. (Option 1) If you answered that it was an appropriate use of the State Pattern, justify how the implementation relates to the key characteristics of the State Pattern.
 
 > (Option 2) If you answered that it was not an appropriate use of the State Pattern, refactor the code to improve the implementation. You may choose to improve the usage of the pattern, switch to a different design pattern, or remove the pattern entirely.
 
-[Answer or brief explanation of your code]
+PLAN:
+
+Classes to be removed:
+    PlayerState
+    InvisibleState
+    BaseState
+    InvincibleState
+
+What fields/methods you will need to add/change in a class:
+    Player.java
+        Fields -
+            Change:
+                PlayerState (Type: PlayerState)
+            Add:
+                private enum PlayerState
+                PlayerState (Type: enum)
+    
+        Methods -
+            Change:
+                public void triggerNext(int currentTick)
+                public void changeState(Potion inEffective)
+                public BattleStatistics applyBuff(BattleStatistics origin)
+
+
+When it came to refactoring the code, we decided to completely omit the State Pattern and opt for a simpler approach to managing player states. 
+
+Firstly, we centralizes the state management logic to within player by declaring an enum field which tracks the player's current states (BASE, INVINCIBLE, INVISIBLE). This enum removed the need for state class instantiation whilst also providing an easy and yet effective way to manage states.
+
+Additionally, state transition logic is also handled inside the Player class. This is done mainly through a modified "changeState()" method which handles the conditions for switching to specific player states.
+
+The final change which are refactoring involved was modifiyng the applybuff method. The if statements for this method now refer to the ENUM values of player states to decide on battle statistics.
+
+Overall, our refactored code mainly focused on removing the need for implementing a complex State Pattern which would bring very little beneift to our code and was rather unecesssary. Our refactored code now moreso focuses on the idea that the already implemented observer pattern is all that is necessary when it comes to managing behavioural changes from changes in player state. 
+
 
 ### c) Inheritance Design
 
