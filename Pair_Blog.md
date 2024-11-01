@@ -160,11 +160,30 @@ To resolve this code smell the first step was to figure out a way to move the lo
 
 > i. Do you think the design is of good quality here? Do you think it complies with the open-closed principle? Do you think the design should be changed?
 
-[Answer]
+The current Goal class does not comply with the open-closed principle (OCP), as it is still open for modification rather than extension. For instance, if a new goal type was to be added, this would mean that its main methods such as "achieved" would require modification by adding more switch case statements. Rather, the class should implement a design pattern which can prevent modification of existing structure, but allow for additional classes to be made in the case of requiring extension. Therefore, the design should be changed.
 
 > ii. If you think the design is sufficient as it is, justify your decision. If you think the answer is no, pick a suitable Design Pattern that would improve the quality of the code and refactor the code accordingly.
 
-[Briefly explain what you did]
+PLAN:
+
+The most suitable design pattern to allow the goal class to be open for extension but closed for modification would be a composite pattern. This new design will make goals with multiple sub-goals (AND goal, OR goal) composite components, and basic goals such as "treasure" and "boulders" leaf nodes. Overarchingly, there will be a component interface which allows for the composite goals and leaf goals to be treated similarly. BY utilising this method, a component interface can be made, and different types of goals can be distinguished by having their own unique classes. This will ensure that the main goal class does not have to be modified when a new type of goal is added, and rather only a new class will have to be made. 
+
+What fields/methods/classes you will need to add/change in a class:
+        New Classes:
+            Goal.java (Component interface for composite pattern)
+            AndGoal.java (Composite class for goals with multiple sub-goals)
+            OrGoal.java (Composite class for goals with multiple sub-goals)
+            ExitGoal.java (Leaf class for the exit goal)
+            BouldersGoal.java (Leaf class for the boulders goal)
+            TreasureGoal.java (Leaf class for the treasure goal)
+
+        Modified class:
+            GoalFactory.java (Tweeked to adapt to new composite pattern)
+
+Conclusion:
+
+Overall the refactored code for the goal logic presents a program which abides moreso with the open-closed principle by being open for extension and closed for modification. This is because, by creatign a component interface (Goal.java interface), and having a structure where different types of goals are repsented by their own concrete class, when a new type of goal is added, the only major change would be an extension by creating an additional concrete class. 
+
 
 ### f) Open Refactoring
 
