@@ -1,13 +1,13 @@
 package dungeonmania.entities.buildables;
 
 import dungeonmania.entities.Entity;
-import dungeonmania.entities.inventory.InventoryItem;
+import dungeonmania.entities.collectables.Useable;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
-public abstract class Buildable extends InventoryItem {
-    public Buildable(Position position) {
-        super(position);
+public abstract class Buildable extends Useable {
+    public Buildable(Position position, int durability) {
+        super(position, durability);
     }
 
     @Override

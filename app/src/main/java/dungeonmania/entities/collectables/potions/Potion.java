@@ -1,6 +1,5 @@
 package dungeonmania.entities.collectables.potions;
 
-import dungeonmania.battles.BattleStatistics;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.inventory.InventoryItem;
@@ -28,13 +27,4 @@ public abstract class Potion extends InventoryItem {
         return duration;
     }
 
-    @Override
-    public BattleStatistics applyBuff(BattleStatistics origin) {
-        return origin;
-    }
-
-    @Override
-    public int getDurability() {
-        return 1;
-    }
 }
