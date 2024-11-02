@@ -33,6 +33,4 @@ public abstract class InventoryItem extends Entity {
 
     public abstract BattleStatistics applyBuff(BattleStatistics origin);
 
-    public abstract int getDurability();
-
 }
