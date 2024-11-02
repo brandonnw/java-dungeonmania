@@ -83,8 +83,4 @@ public class Bomb extends InventoryItem {
         return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, false, false));
     }
 
-    @Override
-    public int getDurability() {
-        return Integer.MAX_VALUE;
-    }
 }

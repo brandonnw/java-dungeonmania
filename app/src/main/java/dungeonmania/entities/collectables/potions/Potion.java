@@ -33,8 +33,4 @@ public abstract class Potion extends InventoryItem {
         return origin;
     }
 
-    @Override
-    public int getDurability() {
-        return 1;
-    }
 }
