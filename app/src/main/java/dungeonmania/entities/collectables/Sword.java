@@ -1,12 +1,13 @@
 package dungeonmania.entities.collectables;
 
 import dungeonmania.battles.BattleStatistics;
+import dungeonmania.entities.Buffable;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
-public class Sword extends Useable {
+public class Sword extends Useable implements Buffable {
     public static final double DEFAULT_ATTACK = 1;
     public static final double DEFAULT_ATTACK_SCALE_FACTOR = 1;
     public static final int DEFAULT_DURABILITY = 5;

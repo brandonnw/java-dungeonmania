@@ -1,8 +1,9 @@
 package dungeonmania.entities.buildables;
 
 import dungeonmania.battles.BattleStatistics;
+import dungeonmania.entities.Buffable;
 
-public class Shield extends Buildable {
+public class Shield extends Buildable implements Buffable {
     private double defence;
 
     public Shield(int durability, double defence) {
