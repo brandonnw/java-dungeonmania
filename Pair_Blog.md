@@ -34,7 +34,7 @@ import dungeonmania.entities.Player;
 
 What fields/methods you will need to add/change in a class:
     Fields -
-        Remove
+        Remove:
             movementType (mercenary and zombietoast)
         Add:
             private MovementStrategy movementType
@@ -123,15 +123,80 @@ Overall, our refactored code mainly focused on removing the need for implementin
 
 > i. List one design principle that is violated by collectable objects based on the description above. Briefly justify your answer.
 
-[The design principle that is being violated by the collectable objects based ont the description above is the Liskov Substitution Principle. This is because some items like Wood and Treasure have methods applyBuff and durability, even though they do not require them. This means that according to the definition of InventoryItem, Wood and Treasure do not fit as they don't have a durability and they don't apply a buff.
+The design principle that is being violated by the collectable objects based ont the description above is the Liskov Substitution Principle. This is because some items like Wood and Treasure have methods applyBuff and durability, even though they do not require them which leads to inconsistent behaviour. This means that according to the definition of InventoryItem, Wood and Treasure do not fit as they don't have a durability and they don't apply a buff and therefore should not have an inheritence relationship with the current definition of InventoryItem. Therefore, the code must be refactored in a way such that any inheritence relationship can be classified as an "Is a" reltionship where a class can be considered as its superclass.
 
 > ii. Refactor the inheritance structure of the code, and in the process remove the design principle violation you identified.
 Plan:
-1. Remove apply buff and getdurability from inventoryItem.
+1. Remove applyBuff and getDurability from InventoryItem.
 2. Change interface useable to abstract class that extends inventoryItem with methods use and getDurability
 3. Make sword, bow and shield extend useable
-4. make interface for applybuff
-5. make sword, bow, shield, and potions implement applybuff
+4. Make interface for applyBuff
+5. Make Sword, Bow, Shield implement applyBuff
+
+What fields/methods you will need to add/change in a class
+    Fields -
+        Remove:
+            InventoryItem
+                a. applyBuff
+                b. getDurability
+            Potion
+                a. applyBuff
+                b. getDurability
+            InvincibilityPotion
+                a. applyBuff
+                b. getDurability
+            InvisibilityPotion
+                a. applyBuff
+                b. getDurability
+            Sword
+                a. getDurability 
+            Bow
+                a. getDurability
+            Shield
+                a. getDurability
+            Arrow
+                a. applyBuff
+                b. getDurability
+            Bomb
+                a. applyBuff
+                b. getDurability
+            Key
+                a. applyBuff
+                b. getDurability
+            Treasure
+                a. applyBuff
+                b. getDurability
+            Wood
+                a. applyBuff
+                b. getDurability
+
+What new classes/packages you will need to create
+    Abstract Class Useable extends InventoryItem
+        a. public Useable(Position position, int durability)
+        b. public void use(Game game)
+        c. getDurability()
+    Abstract Class Buildable extends Useable
+        a. public Buildable(Position position, int durability)
+    Interface Buffable
+        a. public BattleStatistics applyBuff(BattleStatistics origin)
+
+Brief overview:
+Since there was a clear violation of the Liskov Substitution Principle (LSP) for a number of classes, we needed to change the relationships between classes so that the principle wouldn't be violated. We decided on two majoring refactoring changes. The first one was to remove applyBuff from InventoryItem since there are few items which can apply a buff, and the second was to remove getDurability as only a few items need a durability.
+
+1. Refactor Useable to an Abstract Class and refactor Builable to extend Useable
+Since the use method for Swords, Bows and Shields, along with getDurability was the same, the logic was centralised in the Useable abstract class to clean up code.
+
+2. Remove getDurability from classes which don't need the method
+To ensure that LSP was adhered to, getDurability was removed from the InventoryItem class, along with other classes including, all potions, Arrow, Bomb, Key, Treasure, Wood.
+
+3. Create interface for applyBuff
+an interface Buffable was created so that Sword, Bow and Shield as they are the only classes which can applyBuff.
+
+4. Remove applyBuff from classes which don't need the method
+The method applyBuff was removed from all other classes. Notably it was removed from potions since Player.java has an implementation for applyBuff.
+
+5. Modify battle method in BattleFacade
+In the battle method of BattleFacade, with the refactoring choices we did, there was an error as the object item (InventoryItem) no longer had the applyBuff method. Since the if statement checks for if the item is a Sword, Bow or Shield, we decided to cast item as a Buffable so that we could use the applyBuff method.
 
 ### d) More Code Smells
 
