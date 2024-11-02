@@ -123,11 +123,15 @@ Overall, our refactored code mainly focused on removing the need for implementin
 
 > i. List one design principle that is violated by collectable objects based on the description above. Briefly justify your answer.
 
-[Answer]
+[The design principle that is being violated by the collectable objects based ont the description above is the Liskov Substitution Principle. This is because some items like Wood and Treasure have methods applyBuff and durability, even though they do not require them. This means that according to the definition of InventoryItem, Wood and Treasure do not fit as they don't have a durability and they don't apply a buff.
 
 > ii. Refactor the inheritance structure of the code, and in the process remove the design principle violation you identified.
-
-[Briefly explain what you did]
+Plan:
+1. Remove apply buff and getdurability from inventoryItem.
+2. Change interface useable to abstract class that extends inventoryItem with methods use and getDurability
+3. Make sword, bow and shield extend useable
+4. make interface for applybuff
+5. make sword, bow, shield, and potions implement applybuff
 
 ### d) More Code Smells
 
