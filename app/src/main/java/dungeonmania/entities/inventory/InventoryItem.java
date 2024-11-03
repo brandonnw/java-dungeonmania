@@ -1,13 +1,14 @@
 package dungeonmania.entities.inventory;
 
 import dungeonmania.entities.Entity;
+import dungeonmania.entities.Overlappable;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
 /**
  * An item in the inventory
  */
-public abstract class InventoryItem extends Entity {
+public abstract class InventoryItem extends Entity implements Overlappable {
     public InventoryItem(Position position) {
         super(position);
     }
@@ -19,11 +20,6 @@ public abstract class InventoryItem extends Entity {
 
     @Override
     public abstract void onOverlap(GameMap map, Entity entity);
-
-    @Override
-    public void onMovedAway(GameMap map, Entity entity) {
-        return;
-    }
 
     @Override
     public void onDestroy(GameMap gameMap) {
