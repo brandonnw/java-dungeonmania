@@ -119,7 +119,7 @@ Overall, our refactored code mainly focused on removing the need for implementin
 
 ### c) Inheritance Design
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/6)
 
 > i. List one design principle that is violated by collectable objects based on the description above. Briefly justify your answer.
 
@@ -200,7 +200,7 @@ In the battle method of BattleFacade, with the refactoring choices we did, there
 
 ### d) More Code Smells
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/4)
 
 > i. What code smell is present in the above snippet?
 
@@ -225,7 +225,7 @@ To resolve this code smell the first step was to figure out a way to move the lo
 
 ### e) Open-Closed Goals
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/5)
 
 > i. Do you think the design is of good quality here? Do you think it complies with the open-closed principle? Do you think the design should be changed?
 
@@ -256,13 +256,42 @@ Overall the refactored code for the goal logic presents a program which abides m
 
 ### f) Open Refactoring
 
-[Merge Request 1](/put/links/here)
+[Merge Request 1](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/7)
+Plan for onMovedAway:
+Identified within the exit class that there is an unnecessary method onMovedAway which returns nothing. Analysing further reveals that many classes inherit this method from Entity and also return nothing other than the Switch.java class. We can interpret this as poor inheritence structure that needs to be refactored.
 
-[Briefly explain what you did]
+1. Remove onMovedAway from Entity class
+Since this method is very specific to a single class (Switch) we will remove the method from Entity as no other classes need to inherit this method.
+
+2. Remove method from all subclasses
+Since not every class needs this method, we will remove this method to restructure our system.
+
+3. Keep implementation in Switch.java
+Since Switch.java is the only class which needs logic for onMovedAway, we will keep the logic for this method within the class. This follows the SRP as switches should handle logic for triggers on and off. This avoids unnecessary abstractions and over-engineering.
+
+4. Refactor remaining classes and methods which rely on the previous structure
+Any remaining classes and methods will need to have their logic refactored to correctly use the classes and methods relevant to the new changes. In particular we refactored GameMap to cast the object e as a switch before performing the onMovedAway method.
+
+Plan for onOverlap:
+Identified within the exit class that there is an unnecessary method onOverlap which returns nothing. Analysing further reveals that many classes inherit this method from Entity correctly except for Exit.java, Wall.java and ZombieToastSpawner.java. We can interpret this as poor inheritence structure that needs to be refactored. To resolve this issue, we will be using an interface Overlappable which only applies to entities which have overlapping functionality.
+
+1. Remove onOverlap from Entity class
+Since this method is not needed in the Wall, Exit and ZombieToastSpawner classes, we will remove the method from Entity to remove the violation of LSP.
+
+2. Remove method from Exit, Wall and ZombieToastSpawner
+Since Exit, Wall and ZombieToastSpawner do not need this method, we will remove this method to restructure our system.
+
+3. Create the Overlappable interface
+Creating the Overlappable interface will allow us to choose classes which need the logic for Overlapping. This cleans up our structure and removes unnecessary inheritence.
+
+4. Keep implementation in remaining classes
+Since the remainder of the classes require the logic for onOverlap, we will keep the logic for these classes. This allows us to abide by LSP while improving our structure for overlapping entities.
+
+5. Refactor remaining classes and methods which rely on the previous structure
+Any remaining classes and methods will need to have their logic refactored to correctly use the classes and methods relevant to the new changes. In particular we refactored GameMap to cast the object e as an Overlappable before performing the onOverlap method.
 
 [Merge Request 2](/put/links/here)
 
-[Briefly explain what you did]
 
 Add all other changes you made in the same format here:
 
