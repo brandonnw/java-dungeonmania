@@ -290,8 +290,24 @@ Since the remainder of the classes require the logic for onOverlap, we will keep
 5. Refactor remaining classes and methods which rely on the previous structure
 Any remaining classes and methods will need to have their logic refactored to correctly use the classes and methods relevant to the new changes. In particular we refactored GameMap to cast the object e as an Overlappable before performing the onOverlap method.
 
-[Merge Request 2](/put/links/here)
+[Merge Request 2](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/8)
+Plan:
+Identified within the exit class that there is an unnecessary method onDestroy which returns nothing. Analysing further reveals that many classes do not inherit this method other than Enemy.java and ZombieToastSpawner. We can interpret this as poor inheritence structure that needs to be refactored. To resolve this issue, we will be using an interface Destroyable which only applies to entities which have the functionality for being destroyed.
 
+1. Remove onDestroy from Entity class
+Since this method is not needed in any classes other than Enemy.java, ZombieToastSpawner.java, we will remove the method from Entity to fix the violation of LSP.
+
+2. Remove method from all irrelevant classes
+Since many classes do not need this method, we will remove this method to restructure our system.
+
+3. Create the Destroyable interface
+Creating the Destroyable interface will allow us to choose classes which need the logic for Destroyable. This cleans up our structure and removes unnecessary inheritence.
+
+4. Keep implementation in remaining classes
+Since Enemy.java and ZombieToastSpawner.java require the logic for onDestroy, we will keep the logic for these classes. This allows us to abide by LSP while improving our structure for overlapping entities.
+
+5. Refactor remaining classes and methods which rely on the previous structure
+Any remaining classes and methods will need to have their logic refactored to correctly use the classes and methods relevant to the new changes. In particular we refactored GameMap to cast the object entity as a Destroyable before performing the onDestroy method. 
 
 Add all other changes you made in the same format here:
 

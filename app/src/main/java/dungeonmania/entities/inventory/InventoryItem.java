@@ -21,9 +21,4 @@ public abstract class InventoryItem extends Entity implements Overlappable {
     @Override
     public abstract void onOverlap(GameMap map, Entity entity);
 
-    @Override
-    public void onDestroy(GameMap gameMap) {
-        return;
-    }
-
 }

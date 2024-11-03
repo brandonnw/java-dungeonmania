@@ -10,7 +10,7 @@ import dungeonmania.entities.PotionListener;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
-public abstract class Enemy extends Entity implements Battleable, Overlappable {
+public abstract class Enemy extends Entity implements Battleable, Overlappable, Destroyable {
     private BattleStatistics battleStatistics;
 
     public Enemy(Position position, double health, double attack) {
@@ -37,7 +37,6 @@ public abstract class Enemy extends Entity implements Battleable, Overlappable {
         }
     }
 
-    @Override
     public void onDestroy(GameMap map) {
         Game g = map.getGame();
         g.unsubscribe(getId());
