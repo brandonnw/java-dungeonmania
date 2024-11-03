@@ -69,8 +69,4 @@ public class Portal extends Entity implements Overlappable {
         }
     }
 
-    @Override
-    public void onDestroy(GameMap gameMap) {
-        return;
-    }
 }
