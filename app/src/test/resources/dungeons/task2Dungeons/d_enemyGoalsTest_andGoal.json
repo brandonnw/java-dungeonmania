@@ -6,24 +6,23 @@
             "y": 1
         },
         {
-            "type": "zombie_toast",
+            "type": "exit",
             "x": 1,
-            "y": 3
+            "y": 2
         },
         {
-            "type": "zombie_toast",
+            "type": "sword",
             "x": 2,
-            "y": 3
+            "y": 1
         },
         {
             "type": "zombie_toast_spawner",
-            "x": 2,
-            "y": 2,
-            "id": "spawner"
+            "x": 4,
+            "y": 1
         },
         {
-            "type": "exit",
-            "x": 1,
+            "type": "zombie_toast_spawner",
+            "x": 4,
             "y": 2
         }
     ],
