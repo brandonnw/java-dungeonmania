@@ -1,26 +1,14 @@
 package dungeonmania.entities.collectables.potions;
 
-import dungeonmania.entities.Entity;
-import dungeonmania.entities.Player;
-import dungeonmania.entities.inventory.InventoryItem;
-import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
+import dungeonmania.entities.collectables.Collectable;
 
-public abstract class Potion extends InventoryItem {
+public abstract class Potion extends Collectable {
     private int duration;
 
     public Potion(Position position, int duration) {
         super(position);
         this.duration = duration;
-    }
-
-    @Override
-    public void onOverlap(GameMap map, Entity entity) {
-        if (entity instanceof Player) {
-            if (!((Player) entity).pickUp(this))
-                return;
-            map.destroyEntity(this);
-        }
     }
 
     public int getDuration() {

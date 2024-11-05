@@ -329,6 +329,19 @@ Deleting the translate method will delete the code marked as deprecated and clea
 2. Update classes which rely on this method
 GameMap and Bomb classes relied on the old translate method. So we replaced the logic with the new setPosition method call to function with our refactoring.
 
+Plan:
+
+This refactoring builds upon our previous efforts of refactoring onOverlap and its integration in the codebase. 
+
+Looking at certain classes which extend InventoryItem, such as Key.java, Arrow.java, Sword.java, Potion.java and more, these classes all have the same onOverlap method, with the only exception of Bomb.java which has its own unique onOverlap logic. This makes for a lot of code repetition which can easily be avoided by refactoring. Currently, InventoryItem.java has an abstract method for onOverlap. However, it is not possible to just convert InventoryItem's abstract onOverlap method to a regular method, and simply move the repeated logic in. This is because, given the current layout of our code and specifications, there are certain inventory item's which DO NOT have any logic associated with onOverlap. For instance, Buildable.java which extends InventoryItem, and has concrete classes such as Bow.java and Shield.java represents a group of InventoryItems which do not require an onOverlap method. Accordingly, a possible work-around to both remove code repetition and account for the fact that some inventory items do not implement onOverlap is to create a Collectable class. Here is the plan to do this:
+
+1. Create Collectable.java abstract class inside collectables folder. This class will extend InventoryItem and implement the Overlappable interface. The purpose of creating this class, is so that it can represent all inventory items which have a specified behaviour for onOverlap. This means that we can remove the "implements Overlappable" from InventoryItem which is a much more accurate design as not all inventory items have specific behaviour for onOverlap. Additionally, now with the Colllectable.java abstract class, all inventory items which have a specified behaviour for onOverlap will now extend Collectable instead of InventoryItem. This includes swords, keys, arrows, potions, bombs and more. 
+
+2. Inside Collectable.java, aside from having its own constructor, it will implement the onOverlap method. The specific logic for onOverlap which it will implement is the one found in Key.java, Arrow.java, Sword.java etc. This is because, this is the most common logic for onOverlap, and so by making Collectable implement this version it avoids the most repetition. Now, we still must concern that Bomb.java which implements onOverlap, has its own unique logic for the method. As a result, after we make Bomb.java extend Collectable, it will override the onOverlap method in Collectable, and implement its own logic.
+
+3. The final step for refactoring that we must consider is that in our structure we also have a Useable.java class. Useable.java is an abstract class which extends InventoryItem, and has Sword.java and Buildable.java as sub-classes. Now, since Sword.java is one of its sub-classes, and Sword.java has specific logic for onOverlap, it must implement the logic for it somewhere. However, given our refactored code where InventoryItem no longer implements Overlappable, this therefore means neither will Useable.java and Sword.java. As a result, to work around this, Sword.java will implement Overlappable on its own, giving the specific behaviour for onOverlap, without impacting the other sub-class which extend Useable.java (Buildable.java).
+
+
 ## Task 2) Evolution of Requirements 👽
 
 ### a) Microevolution - Enemy Goal
