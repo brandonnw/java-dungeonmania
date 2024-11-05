@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.HashSet;
 
+import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
 import dungeonmania.battles.Battleable;
 import dungeonmania.entities.collectables.Bomb;
@@ -185,5 +186,12 @@ public class Player extends Entity implements Battleable, Overlappable {
 
     public void removePotionListener(PotionListener e) {
         potionListeners.remove(e);
+    }
+
+    public void useWeapon(Game game) {
+        Useable weapon = getWeapon();
+        if (weapon != null) {
+            weapon.use(game);
+        }
     }
 }

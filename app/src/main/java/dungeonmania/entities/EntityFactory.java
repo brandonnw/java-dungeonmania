@@ -97,7 +97,7 @@ public class EntityFactory {
 
     public ZombieToastSpawner buildZombieToastSpawner(Position pos) {
         int zombieSpawnRate = config.optInt("zombie_spawn_interval", ZombieToastSpawner.DEFAULT_SPAWN_INTERVAL);
-        return new ZombieToastSpawner(pos, zombieSpawnRate);
+        return new ZombieToastSpawner(pos, zombieSpawnRate, this);
     }
 
     public Mercenary buildMercenary(Position pos) {

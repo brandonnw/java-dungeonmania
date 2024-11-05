@@ -2,6 +2,7 @@ package dungeonmania.entities.enemies;
 
 import dungeonmania.Game;
 import dungeonmania.entities.Entity;
+import dungeonmania.entities.EntityFactory;
 import dungeonmania.entities.Interactable;
 import dungeonmania.entities.Player;
 import dungeonmania.map.GameMap;
@@ -9,13 +10,15 @@ import dungeonmania.util.Position;
 
 public class ZombieToastSpawner extends Entity implements Interactable, Destroyable {
     public static final int DEFAULT_SPAWN_INTERVAL = 0;
+    private EntityFactory entityFactory;
 
-    public ZombieToastSpawner(Position position, int spawnInterval) {
+    public ZombieToastSpawner(Position position, int spawnInterval, EntityFactory entityFactory) {
         super(position);
+        this.entityFactory = entityFactory;
     }
 
     public void spawn(Game game) {
-        game.getEntityFactory().spawnZombie(game, this);
+        entityFactory.spawnZombie(game, this);
     }
 
     public void onDestroy(GameMap map) {
@@ -25,7 +28,7 @@ public class ZombieToastSpawner extends Entity implements Interactable, Destroya
 
     @Override
     public void interact(Player player, Game game) {
-        player.getInventory().getWeapon().use(game);
+        player.useWeapon(game);
     }
 
     @Override
