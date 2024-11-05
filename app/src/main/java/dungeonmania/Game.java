@@ -12,6 +12,7 @@ import dungeonmania.entities.Player;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
+import dungeonmania.entities.enemies.ZombieToastSpawner;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goals.Goal;
 import dungeonmania.map.GameMap;
@@ -37,6 +38,8 @@ public class Game {
     private int tickCount = 0;
     private PriorityQueue<ComparableCallback> sub = new PriorityQueue<>();
     private PriorityQueue<ComparableCallback> addingSub = new PriorityQueue<>();
+
+    private int enemiesDefeatedCount = 0;
 
     public Game(String dungeonName) {
         this.name = dungeonName;
@@ -203,4 +206,17 @@ public class Game {
     public BattleFacade getBattleFacade() {
         return battleFacade;
     }
+
+    public void incrementEnemiesDefeated() {
+        enemiesDefeatedCount++;
+    }
+
+    public int getEnemiesDefeatedCount() {
+        return enemiesDefeatedCount;
+    }
+
+    public int getSpawnerCount() {
+        return map.getEntities(ZombieToastSpawner.class).size();
+    }
+
 }

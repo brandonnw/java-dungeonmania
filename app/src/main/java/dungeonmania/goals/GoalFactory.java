@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import dungeonmania.goals.compositeGoals.AndGoal;
 import dungeonmania.goals.compositeGoals.OrGoal;
 import dungeonmania.goals.leafGoals.BouldersGoal;
+import dungeonmania.goals.leafGoals.EnemyGoal;
 import dungeonmania.goals.leafGoals.ExitGoal;
 import dungeonmania.goals.leafGoals.TreasureGoal;
 
@@ -28,6 +29,9 @@ public class GoalFactory {
             return new TreasureGoal(treasureGoal);
         case "exit":
             return new ExitGoal();
+        case "enemies":
+            int enemyGoal = config.optInt("enemy_goal", 1);
+            return new EnemyGoal(enemyGoal);
         default:
             return null;
         }
