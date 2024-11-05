@@ -349,7 +349,8 @@ A key design option selected in our design was to leave EnemyGoal as a single cl
 
 2. Updating Existing Classes:
     - GoalFactory.java: 
-        - Update the createGoal method to include a switch case which recognizes "enemies" in the goal JSON and create an instance of EnemyGoal with the required configuration value.
+        Updated method:
+            - Update the createGoal method to include a switch case which recognizes "enemies" in the goal JSON and create an instance of EnemyGoal with the required configuration value.
 
     - Game.java:
         New fields:
@@ -358,9 +359,14 @@ A key design option selected in our design was to leave EnemyGoal as a single cl
             - public void incrementEnemiesDefeated(): Increases count when player defeats an enemy.
             - public int getEnemiesDefeatedCount(): Returns the number of enemies the player has defeated.
             - public int getSpawnerCount(): Returns the number of spawners remaining on the map.
+
     - ZombieToastSpawner.java:
         Updated method:
-            The interact method in ZombieToastSpawner was updated to include a line of code which actually now destroys (removes from map) spawners when a player interacts with it validly.
+            - The interact method in ZombieToastSpawner was updated to include a line of code which actually now destroys (removes from map) spawners when a player interacts with it validly.
+
+    - Enemy.java:
+        Updated method:
+            - Updated the onDestroy method. Now, when an enemy is destroyed, a line of code will call the incrementEnemiesDefeated() method in Game.java.
     
 **Changes after review**
 
