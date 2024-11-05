@@ -309,7 +309,7 @@ Since Enemy.java and ZombieToastSpawner.java require the logic for onDestroy, we
 5. Refactor remaining classes and methods which rely on the previous structure
 Any remaining classes and methods will need to have their logic refactored to correctly use the classes and methods relevant to the new changes. In particular we refactored GameMap to cast the object entity as a Destroyable before performing the onDestroy method. 
 
-[Merge Request 2](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/9)
+[Merge Request 3](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/9)
 Plan:
 Looked over the code for ZombieToastSpawner and noticed a Law of Demeter (LoD) violation in spawn and interact methods. These methods call multiple other classes, which should not be within access of the method.
 
@@ -318,6 +318,16 @@ Instead of calling player.getInventory().getWeapon().use(), we will make a metho
 
 2. Add entityFactory into ZombieToastSpawner
 Since spawn relies on the Game class to get the entityFactory to spawn the zombietoastspawner, we can instead add the entity factory directly to the class through the constructor. This allows direct access to the factory to then create the spawner.
+
+[Merge Request 4](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/10)
+Plan:
+Looked over the code in GameMap and noticed comments regarding the deletion of translate methods and to be replaced with the setPosition method. Leaving this in the code would have reduced code clarity, thus, using the setPosition method clearly indicates to the client the purpose of the method.
+
+1. Delete translate method
+Deleting the translate method will delete the code marked as deprecated and cleans up the codebase for the entity class.
+
+2. Update classes which rely on this method
+GameMap and Bomb classes relied on the old translate method. So we replaced the logic with the new setPosition method call to function with our refactoring.
 
 ## Task 2) Evolution of Requirements 👽
 
