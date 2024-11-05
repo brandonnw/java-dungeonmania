@@ -336,27 +336,35 @@ Since spawn relies on the Game class to get the entityFactory to spawn the zombi
 
 **Design**
 
+A key design option selected in our design was to leave EnemyGoal as a single class. Instead of splitting its sub-goals into their own unique classes, we will instead contain them in one EnemyGoal class. The reasoning for this is because despite EnemyGoal have sub-goals, the sub-goals are unique to the EnemyGoal. As a result, there is no beneficial purpose in splitting the sub-goals into their own classes. 
+
 1. New Classes:
    - EnemyGoal: This class will inherit from Goal.java interface, and implement logic for enemy goal completion
        - Fields:
            int target: This field will store the minimum number of enemies which needs to be defeated and is taken from the configuration.
-           int numEnemiesDefeated: This field will store the number of enemies that have been defeated.
        - Methods:
-           1. public EnemyGoal(int enemyGoal): This is a constructor which will allow the instance of the enemy goal to store the "target"
+           1. public EnemyGoal(int enemyGoal): This is a constructor which will allow the instance of the enemy goal to store the "target" number of enemies to be defeated from config.
            2. public boolean achieved(Game game): This method will check whether the minimum number of enemies required to be destroyed has been reached, and if all spawners are destroyed.
            3. public String toString(Game game)
-           4. void incrementDefeatedEnemies(): This method will increase the defeatedEnemiesCount when an enemy is defeated.
+
 2. Updating Existing Classes:
     - GoalFactory.java: 
-        Update the createGoal method to recognize "enemies" in the goal JSON and create an instance of EnemyGoal with the required configuration value for enemy_goal
+        - Update the createGoal method to include a switch case which recognizes "enemies" in the goal JSON and create an instance of EnemyGoal with the required configuration value.
+
     - Game.java:
         New fields:
-            - private int enemiesDefeatedCount
-            - private int spawnersDestroyedCount;
-
+            - private int enemiesDefeatedCount: Tracks the number of enemies defeated
+        New methods:
+            - public void incrementEnemiesDefeated(): Increases count when player defeats an enemy.
+            - public int getEnemiesDefeatedCount(): Returns the number of enemies the player has defeated.
+            - public int getSpawnerCount(): Returns the number of spawners remaining on the map.
+    - ZombieToastSpawner.java:
+        Updated method:
+            The interact method in ZombieToastSpawner was updated to include a line of code which actually now destroys (removes from map) spawners when a player interacts with it validly.
+    
 **Changes after review**
 
-[Design review/Changes made]
+N/A
 
 **Test list**
 
@@ -371,7 +379,8 @@ Since spawn relies on the Game class to get the entityFactory to spawn the zombi
 3. Testing enemy_goal is 3, and no spawners
     - If only 3 enemies are defeated and now spawners are destroyed, the goal should still be satisfied.
 
-4. Testing that the exit goal must be achieved last in exit and enemies
+4. Testing that the enemy goal can be combined with other goals
+    - Confirms that it validly can be in conjunction and disjunction with other goals.
     - Confirms that when an exit goal is in conjunction with an enemy goal, the enemy goal must be completed before the exit goal.
 
 For all the above tests, new config files, and subequent dungeon layouts will be created and stored in a folder called task2Configs and task2Dungeons respectively.
@@ -380,7 +389,7 @@ For all the above tests, new config files, and subequent dungeon layouts will be
 
 - Needed to modify the regression test in ZombieTest.java which tested for destroying zombie toast spawner. The original test had an assertion which even after interacting with the spawner, asserted that it will still exist. However, by implementing the new destroy logic for spawners in this part, which actually removes them from the map after a player validly interacts with it, this assertion will need to be modified to assert that the spawner will no longer exist. 
 
-- 
+- Will have to refactor interact method to also take in GameMap map as an argument. This is important for the interact method in ZombieToastSpawner.java to ensure the code doesn't violate the law of demeter.
 
 ### Choice 1 (Insert choice)
 
