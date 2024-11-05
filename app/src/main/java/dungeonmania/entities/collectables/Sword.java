@@ -3,11 +3,12 @@ package dungeonmania.entities.collectables;
 import dungeonmania.battles.BattleStatistics;
 import dungeonmania.entities.Buffable;
 import dungeonmania.entities.Entity;
+import dungeonmania.entities.Overlappable;
 import dungeonmania.entities.Player;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
-public class Sword extends Useable implements Buffable {
+public class Sword extends Useable implements Overlappable, Buffable {
     public static final double DEFAULT_ATTACK = 1;
     public static final double DEFAULT_ATTACK_SCALE_FACTOR = 1;
     public static final int DEFAULT_DURABILITY = 5;
@@ -22,17 +23,17 @@ public class Sword extends Useable implements Buffable {
     }
 
     @Override
-    public boolean canMoveOnto(GameMap map, Entity entity) {
-        return true;
-    }
-
-    @Override
     public void onOverlap(GameMap map, Entity entity) {
         if (entity instanceof Player) {
             if (!((Player) entity).pickUp(this))
                 return;
             map.destroyEntity(this);
         }
+    }
+
+    @Override
+    public boolean canMoveOnto(GameMap map, Entity entity) {
+        return true;
     }
 
     @Override
