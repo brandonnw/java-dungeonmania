@@ -1,10 +1,6 @@
 package dungeonmania.entities;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.Set;
-import java.util.HashSet;
 
 import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
@@ -12,7 +8,6 @@ import dungeonmania.battles.Battleable;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.Useable;
-import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
 import dungeonmania.entities.enemies.Mercenary;
@@ -27,25 +22,16 @@ public class Player extends Entity implements Battleable, Overlappable {
     public static final double DEFAULT_HEALTH = 5.0;
     private BattleStatistics battleStatistics;
     private Inventory inventory;
-    private Queue<Potion> queue = new LinkedList<>();
-    private Potion inEffective = null;
-    private int nextTrigger = 0;
-    private Set<PotionListener> potionListeners = new HashSet<>();
+    private PotionManager potionManager;
 
     private int collectedTreasureCount = 0;
-
-    private enum PlayerState {
-        BASE, INVINCIBLE, INVISIBLE
-    }
-
-    private PlayerState state;
 
     public Player(Position position, double health, double attack) {
         super(position);
         battleStatistics = new BattleStatistics(health, attack, 0, BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER,
                 BattleStatistics.DEFAULT_PLAYER_DAMAGE_REDUCER);
         inventory = new Inventory();
-        state = PlayerState.BASE;
+        potionManager = new PotionManager();
     }
 
     public int getCollectedTreasureCount() {
@@ -107,7 +93,7 @@ public class Player extends Entity implements Battleable, Overlappable {
     }
 
     public Potion getEffectivePotion() {
-        return inEffective;
+        return potionManager.getEffectivePotion();
     }
 
     public <T extends InventoryItem> void use(Class<T> itemType) {
@@ -122,37 +108,15 @@ public class Player extends Entity implements Battleable, Overlappable {
     }
 
     public void triggerNext(int currentTick) {
-        if (queue.isEmpty()) {
-            state = PlayerState.BASE;
-            potionListeners.forEach(PotionListener::notifyNoPotion);
-            return;
-        }
-        inEffective = queue.remove();
-        changeState(inEffective);
-        potionListeners.forEach(e -> e.notifyPotion(inEffective));
-        nextTrigger = currentTick + inEffective.getDuration();
-    }
-
-    public void changeState(Potion inEffective) {
-        if (inEffective instanceof InvincibilityPotion) {
-            state = PlayerState.INVINCIBLE;
-        } else {
-            state = PlayerState.INVISIBLE;
-        }
+        potionManager.triggerNext(currentTick);
     }
 
     public void use(Potion potion, int tick) {
-        inventory.remove(potion);
-        queue.add(potion);
-        if (inEffective == null) {
-            triggerNext(tick);
-        }
+        potionManager.usePotion(potion, tick, inventory);
     }
 
     public void onTick(int tick) {
-        if (inEffective == null || tick == nextTrigger) {
-            triggerNext(tick);
-        }
+        potionManager.onTick(tick);
     }
 
     public void remove(InventoryItem item) {
@@ -169,23 +133,15 @@ public class Player extends Entity implements Battleable, Overlappable {
     }
 
     public BattleStatistics applyBuff(BattleStatistics origin) {
-        if (state == PlayerState.INVINCIBLE) {
-            return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, true, true));
-        } else if (state == PlayerState.INVISIBLE) {
-            return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, false, false));
-        }
-        return origin;
+        return potionManager.applyBuff(origin);
     }
 
     public void registerPotionListener(PotionListener e) {
-        potionListeners.add(e);
-
-        if (getEffectivePotion() != null)
-            e.notifyPotion(getEffectivePotion());
+        potionManager.registerListener(e);
     }
 
     public void removePotionListener(PotionListener e) {
-        potionListeners.remove(e);
+        potionManager.removeListener(e);
     }
 
     public void useWeapon(Game game) {

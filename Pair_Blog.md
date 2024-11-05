@@ -73,10 +73,11 @@ Since the repeated code between Mercenary and ZombieToast were that of movement,
 
 > i. Identify one place where the State Pattern is present in the codebase. Do you think this is an appropriate use of the State Pattern?
 
-A notable state pattern in the codebase occurs in the logic for player states. Particularly, the folder named "playerState" encapsulates the abstract state class, and the different states which a player can be in depending on whether a potion is active or not. Additionally, the Player.java function implements the logic for transitioning this state pattern mainly in the triggerNext method. However, we believe that this State Pattern has not been appropriately used. This is mainly because there are no major alterations in behaviour when the internal state for player changes. For instance, when the player transitions from base state to invincible, the player's behaviour doesn't change, but rather the behaviour of the potionListeners changes. 
+NOTE: The refactoring in this task was re-done while doing 1f. Therefore, the merge request link for this part is the same as 1f.
 
-Hence, there is an observer pattern implemented for the potionListeners, notifying them and updating their behaviour when the internal state of player changes. As a result, this State Pattern is mostly redundant, and the codebase can operate more efficiently and just as effectively without it.
+A notable state pattern in the codebase occurs in the logic for player states. Particularly, the folder named "playerState" encapsulates the abstract state class, and the different states which a player can be in depending on whether a potion is active or not. Additionally, the Player.java function implements the logic for transitioning this state pattern mainly in the triggerNext method. However, this State Pattern has not been appropriately used. This is mainly because there are no major alterations in behaviour when the internal state for player changes. For instance, when the player transitions from base state to invincible, the player's behaviour doesn't change, but rather the behaviour of the potionListeners changes.
 
+Hence, there is an observer pattern implemented for the potionListeners, notifying them and updating their behaviour when the internal state of player changes. However, actually tracking the state of the player in either a state pattern form or string or enum is useless. This is because even listeners are updated through the inEffective field. This is because, the inEffective field stores the current potion which is acting on the player. As a result, the inEffective field can basically just act as a state tracker in itself.
 
 > ii. (Option 1) If you answered that it was an appropriate use of the State Pattern, justify how the implementation relates to the key characteristics of the State Pattern.
 
@@ -93,28 +94,17 @@ Classes to be removed:
 What fields/methods you will need to add/change in a class:
     Player.java
         Fields -
-            Change:
+            Remove:
                 PlayerState (Type: PlayerState)
-            Add:
-                private enum PlayerState
-                PlayerState (Type: enum)
-    
         Methods -
             Change:
                 public void triggerNext(int currentTick)
-                public void changeState(Potion inEffective)
                 public BattleStatistics applyBuff(BattleStatistics origin)
+            Remove:
+                public void changeState(Potion inEffective)
 
 
-When it came to refactoring the code, we decided to completely omit the State Pattern and opt for a simpler approach to managing player states. 
-
-Firstly, we centralizes the state management logic to within player by declaring an enum field which tracks the player's current states (BASE, INVINCIBLE, INVISIBLE). This enum removed the need for state class instantiation whilst also providing an easy and yet effective way to manage states.
-
-Additionally, state transition logic is also handled inside the Player class. This is done mainly through a modified "changeState()" method which handles the conditions for switching to specific player states.
-
-The final change which are refactoring involved was modifiyng the applybuff method. The if statements for this method now refer to the ENUM values of player states to decide on battle statistics.
-
-Overall, our refactored code mainly focused on removing the need for implementing a complex State Pattern which would bring very little beneift to our code and was rather unecesssary. Our refactored code now moreso focuses on the idea that the already implemented observer pattern is all that is necessary when it comes to managing behavioural changes from changes in player state. 
+When it came to refactoring the code, we decided to completely omit the State Pattern and opt for a simpler approach to managing player states. Overall, our refactored code mainly focused on removing the need for implementing a complex State Pattern which would bring very little beneift to our code and was arguably completely unecesssary. Our refactored code now moreso focuses on the idea that an independent field to track the player's state is not required, as there is already a field which stores the current potion which is in effect. Accordingly, in any instance of when an entity wants to observe the player's state, they can do so through just the inEffective field, rendering any other state fields redundant.
 
 
 ### c) Inheritance Design
@@ -345,6 +335,18 @@ Accordingly, a possible work-around to both remove code repetition and account f
 2. Inside Collectable.java, aside from having its own constructor, it will implement the onOverlap method. The specific logic for onOverlap which it will implement is the one found in Key.java, Arrow.java, Sword.java etc. This is because, this is the most common logic for onOverlap, and so by making Collectable implement this version it avoids the most repetition. Now, we still must concern that Bomb.java which implements onOverlap, has its own unique logic for the method. As a result, after we make Bomb.java extend Collectable, it will override the onOverlap method in Collectable, and implement its own logic.
 
 3. The final step for refactoring that we must consider is that in our structure we also have a Useable.java class. Useable.java is an abstract class which extends InventoryItem, and has Sword.java and Buildable.java as sub-classes. Now, since Sword.java is one of its sub-classes, and Sword.java has specific logic for onOverlap, it must implement the logic for it somewhere. However, given our refactored code where InventoryItem no longer implements Overlappable, this therefore means neither will Useable.java and Sword.java. As a result, to work around this, Sword.java will implement Overlappable on its own, giving the specific behaviour for onOverlap, without impacting the other sub-class which extend Useable.java (Buildable.java).
+
+
+Player.java Refactoring Potion Logic
+
+Plan: 
+- Looking over the Player.java class, it becomes immediately evident that the class is handling several responsibilites at once. Namely, it handles the logic for using potions, and applying their effects. This violates the single-responsibility principle (SRP), because it should not be the responsibility of the player to handle this. The player should rather not have to worry or see the logic about how taking a potion works, and should rather just experience their effects. Accordingly, it is necessary to refactor Player.java to remove this potion logic, and move it into its own class. Here is the plan:
+
+1. The first step was to create an appropriate class inside the entities folder. Since, this new class will be handling all the potion logic in Player.java, it will be called PotionManager.java. By being designed as a class which can take all the potion logic from Player.java, the PotionManager class will handle the management of active and queued potions for the Player. This means that the Player class will transfer the following fields to the PotionManager class: queue, inEffective, nextTrigger and potionListeners. In doing so, the potion manager class will effectively act as the manager of all things-potion which is related to the player, including behaviours such as notifying listeners and removing listeners. Additionally, the applyBuff method which was originally in Player.java, will be relocated to potionManager.java.
+
+2. On top of transitioning all of the potion logic from the player class to the potion manager class, another refactor involving applyBuff was also completed. Specifically, it was decided that the respective potion classes such as InvincibilityPotion and InvisibilityPotion should hnadle their own special buffs they apply to a players statistics. Accordingly, Potion.java was refactored to implement the Buffable interface we created (interface for items which have the bheaviour of giving a player a buff), and the concrete classes (specific types of potions) will then implement their specific applyBuff method. 
+
+3. (Noted in Part 1b) Along the way of refactoring Player.java, it was realised that tracking the players state, either through the state pattern or an enum/string was redundant. This is because the inEffective variable effectively already tracked the player's state by storing the current potion which is impacting the player. Additionally, the inEffective field was used to notify listeners, thus making storing the player state in any other way redundant. 
 
 
 ## Task 2) Evolution of Requirements 👽
