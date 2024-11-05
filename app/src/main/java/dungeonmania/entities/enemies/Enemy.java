@@ -40,6 +40,7 @@ public abstract class Enemy extends Entity implements Battleable, Overlappable, 
     public void onDestroy(GameMap map) {
         Game g = map.getGame();
         g.unsubscribe(getId());
+        g.incrementEnemiesDefeated();
         if (this instanceof PotionListener)
             map.getPlayer().removePotionListener((PotionListener) this);
     }

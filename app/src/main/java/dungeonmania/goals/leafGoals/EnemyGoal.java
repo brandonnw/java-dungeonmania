@@ -1,7 +1,6 @@
 package dungeonmania.goals.leafGoals;
 
 import dungeonmania.Game;
-import dungeonmania.entities.enemies.ZombieToastSpawner;
 import dungeonmania.goals.Goal;
 
 public class EnemyGoal implements Goal {
@@ -13,7 +12,7 @@ public class EnemyGoal implements Goal {
 
     @Override
     public boolean achieved(Game game) {
-        return game.getEnemiesDefeated() >= target && game.getMap().getEntities(ZombieToastSpawner.class).isEmpty();
+        return game.getEnemiesDefeatedCount() >= target && game.getSpawnerCount() == 0;
     }
 
     @Override

@@ -1,11 +1,9 @@
 package dungeonmania.mvp.task2Tests;
 
 import dungeonmania.DungeonManiaController;
-import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
-import dungeonmania.util.Position;
 import dungeonmania.mvp.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -19,7 +17,7 @@ public class EnemyGoalsTest {
     @Test
     @Tag("11-10")
     @DisplayName("Test goal is achieved with minimum 3 enemies and 2 spawners")
-    public void enemyGoal() throws IllegalArgumentException, InvalidActionException {
+    public void enemyGoal() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("task2Dungeons/d_enemyGoalsTest_basic",
                 "task2Configs/c_enemyGoalsTest_basic");

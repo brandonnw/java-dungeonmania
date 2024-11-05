@@ -12,6 +12,7 @@ import dungeonmania.entities.Player;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
+import dungeonmania.entities.enemies.ZombieToastSpawner;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goals.Goal;
 import dungeonmania.map.GameMap;
@@ -84,16 +85,7 @@ public class Game {
         }
         if (enemy.getBattleStatistics().getHealth() <= 0) {
             map.destroyEntity(enemy);
-            incrementEnemiesDefeated();
         }
-    }
-
-    private void incrementEnemiesDefeated() {
-        enemiesDefeatedCount++;
-    }
-
-    public int getEnemiesDefeated() {
-        return enemiesDefeatedCount;
     }
 
     public Game build(String buildable) throws InvalidActionException {
@@ -214,4 +206,17 @@ public class Game {
     public BattleFacade getBattleFacade() {
         return battleFacade;
     }
+
+    public void incrementEnemiesDefeated() {
+        enemiesDefeatedCount++;
+    }
+
+    public int getEnemiesDefeatedCount() {
+        return enemiesDefeatedCount;
+    }
+
+    public int getSpawnerCount() {
+        return map.getEntities(ZombieToastSpawner.class).size();
+    }
+
 }
