@@ -12,7 +12,10 @@
 
 ## Week 8
 
-- List the tasks you completed this week here
+- Task 1b
+- Task 1d
+- Task 1e
+- Task 1f: 2 Refactors
 
 ## Week 9
 
