@@ -38,6 +38,8 @@ public class Game {
     private PriorityQueue<ComparableCallback> sub = new PriorityQueue<>();
     private PriorityQueue<ComparableCallback> addingSub = new PriorityQueue<>();
 
+    private int enemiesDefeatedCount = 0;
+
     public Game(String dungeonName) {
         this.name = dungeonName;
         this.map = new GameMap();
@@ -82,7 +84,16 @@ public class Game {
         }
         if (enemy.getBattleStatistics().getHealth() <= 0) {
             map.destroyEntity(enemy);
+            incrementEnemiesDefeated();
         }
+    }
+
+    private void incrementEnemiesDefeated() {
+        enemiesDefeatedCount++;
+    }
+
+    public int getEnemiesDefeated() {
+        return enemiesDefeatedCount;
     }
 
     public Game build(String buildable) throws InvalidActionException {

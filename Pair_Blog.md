@@ -319,11 +319,32 @@ Add all other changes you made in the same format here:
 
 **Assumptions**
 
-[Any assumptions made]
+1. Minimum Enemies Requirement - The configuration file will define the minimum number of enemies that must be defeated to satisfy the enemy goal. Additionally, the minimum number will vary per dungeon.
+2. Enemy Types - Valid enemy types includes all subclasses of Enemy (e.g., ZombieToast, Spider, etc.)
+3. Backwards Compatibility - The new goal should be compatible with the existing composite goal structure made in task 1e.
+4. The spawners that need to be destroyed are pre-defined
+5. Assume that there is at least the minimum number of enemies required to be destroyed on the map.
+6. Assume if a map is created without a zombie toast spawner, then the sub-goal to destroy all zombie toast spawners is achieved.
 
 **Design**
 
-[Design]
+1. New Classes:
+   - EnemyGoal: This class will inherit from Goal.java interface, and implement logic for enemy goal completion
+       - Fields:
+           int target: This field will store the minimum number of enemies which needs to be defeated and is taken from the configuration.
+           int numEnemiesDefeated: This field will store the number of enemies that have been defeated.
+       - Methods:
+           1. public EnemyGoal(int enemyGoal): This is a constructor which will allow the instance of the enemy goal to store the "target"
+           2. public boolean achieved(Game game): This method will check whether the minimum number of enemies required to be destroyed has been reached, and if all spawners are destroyed.
+           3. public String toString(Game game)
+           4. void incrementDefeatedEnemies(): This method will increase the defeatedEnemiesCount when an enemy is defeated.
+2. Updating Existing Classes:
+    - GoalFactory.java: 
+        Update the createGoal method to recognize "enemies" in the goal JSON and create an instance of EnemyGoal with the required configuration value for enemy_goal
+    - Game.java:
+        New fields:
+            - private int enemiesDefeatedCount
+            - private int spawnersDestroyedCount;
 
 **Changes after review**
 
@@ -331,11 +352,27 @@ Add all other changes you made in the same format here:
 
 **Test list**
 
-[Test List]
+1. Test achieving a basic enemy goal by defeating minimum 3 enemies and 2 spawners
+    - Confirms that enemy goal can be initialized successfully as an active goal
+    - Confirms that killing the minimum number of enemies and all spawners will achieve the goal
+    - Confirms that only killing enemies, or only destroying spawners won't achieve the goal
+
+2. Testing enemy_goal is 0, but there are 2 zombie spawners
+    - If the two spawners are destroyed without defeating any enemies, the goal should still be satisfied.
+
+3. Testing enemy_goal is 3, and no spawners
+    - If only 3 enemies are defeated and now spawners are destroyed, the goal should still be satisfied.
+
+4. Testing that the exit goal must be achieved last in exit and enemies
+    - Confirms that when an exit goal is in conjunction with an enemy goal, the enemy goal must be completed before the exit goal.
+
+For all the above tests, new config files, and subequent dungeon layouts will be created and stored in a folder called task2Configs and task2Dungeons respectively.
 
 **Other notes**
 
-[Any other notes]
+- Needed to modify the regression test in ZombieTest.java which tested for destroying zombie toast spawner. The original test had an assertion which even after interacting with the spawner, asserted that it will still exist. However, by implementing the new destroy logic for spawners in this part, which actually removes them from the map after a player validly interacts with it, this assertion will need to be modified to assert that the spawner will no longer exist. 
+
+- 
 
 ### Choice 1 (Insert choice)
 
