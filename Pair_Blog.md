@@ -69,7 +69,7 @@ Since the repeated code between Mercenary and ZombieToast were that of movement,
 
 ### b) Pattern Analysis
 
-[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/3)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/13)
 
 > i. Identify one place where the State Pattern is present in the codebase. Do you think this is an appropriate use of the State Pattern?
 
@@ -338,6 +338,7 @@ Accordingly, a possible work-around to both remove code repetition and account f
 
 
 Player.java Refactoring Potion Logic
+[Merge Request 6](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/13)
 
 Plan: 
 - Looking over the Player.java class, it becomes immediately evident that the class is handling several responsibilites at once. Namely, it handles the logic for using potions, and applying their effects. This violates the single-responsibility principle (SRP), because it should not be the responsibility of the player to handle this. The player should rather not have to worry or see the logic about how taking a potion works, and should rather just experience their effects. Accordingly, it is necessary to refactor Player.java to remove this potion logic, and move it into its own class. Here is the plan:
