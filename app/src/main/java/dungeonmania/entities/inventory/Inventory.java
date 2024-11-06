@@ -6,14 +6,11 @@ import java.util.stream.Collectors;
 
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.EntityFactory;
-import dungeonmania.entities.Player;
 import dungeonmania.entities.buildables.Bow;
-import dungeonmania.entities.collectables.Arrow;
-import dungeonmania.entities.collectables.Key;
+import dungeonmania.entities.buildables.BowRecipe;
+import dungeonmania.entities.buildables.ShieldRecipe;
 import dungeonmania.entities.collectables.Sword;
-import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.Useable;
-import dungeonmania.entities.collectables.Wood;
 
 public class Inventory {
     private List<InventoryItem> items = new ArrayList<>();
@@ -28,49 +25,36 @@ public class Inventory {
     }
 
     public List<String> getBuildables() {
-
-        int wood = count(Wood.class);
-        int arrows = count(Arrow.class);
-        int treasure = count(Treasure.class);
-        int keys = count(Key.class);
         List<String> result = new ArrayList<>();
+        CraftingSystem bowRecipe = new BowRecipe();
+        CraftingSystem shieldRecipe = new ShieldRecipe();
 
-        if (wood >= 1 && arrows >= 3) {
+        if (bowRecipe.canBuild(this)) {
             result.add("bow");
         }
-        if (wood >= 2 && (treasure >= 1 || keys >= 1)) {
+        if (shieldRecipe.canBuild(this)) {
             result.add("shield");
         }
         return result;
     }
 
-    public InventoryItem checkBuildCriteria(Player p, boolean remove, boolean forceShield, EntityFactory factory) {
-
-        List<Wood> wood = getEntities(Wood.class);
-        List<Arrow> arrows = getEntities(Arrow.class);
-        List<Treasure> treasure = getEntities(Treasure.class);
-        List<Key> keys = getEntities(Key.class);
-
-        if (wood.size() >= 1 && arrows.size() >= 3 && !forceShield) {
-            if (remove) {
-                items.remove(wood.get(0));
-                items.remove(arrows.get(0));
-                items.remove(arrows.get(1));
-                items.remove(arrows.get(2));
+    public InventoryItem checkBuildCriteria(String entity, EntityFactory entityFactory) {
+        switch (entity) {
+        case "bow":
+            CraftingSystem bowRecipe = new BowRecipe();
+            if (bowRecipe.canBuild(this)) {
+                bowRecipe.consumeItems(this);
+                return bowRecipe.build(entityFactory);
             }
-            return factory.buildBow();
-
-        } else if (wood.size() >= 2 && (treasure.size() >= 1 || keys.size() >= 1)) {
-            if (remove) {
-                items.remove(wood.get(0));
-                items.remove(wood.get(1));
-                if (treasure.size() >= 1) {
-                    items.remove(treasure.get(0));
-                } else {
-                    items.remove(keys.get(0));
-                }
+            break;
+        case "shield":
+            CraftingSystem shieldRecipe = new ShieldRecipe();
+            if (shieldRecipe.canBuild(this)) {
+                shieldRecipe.consumeItems(this);
+                return shieldRecipe.build(entityFactory);
             }
-            return factory.buildShield();
+        default:
+            break;
         }
         return null;
     }

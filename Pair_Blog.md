@@ -349,6 +349,21 @@ Plan:
 
 3. (Noted in Part 1b) Along the way of refactoring Player.java, it was realised that tracking the players state, either through the state pattern or an enum/string was redundant. This is because the inEffective variable effectively already tracked the player's state by storing the current potion which is impacting the player. Additionally, the inEffective field was used to notify listeners, thus making storing the player state in any other way redundant. 
 
+[Merge Request 7](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/14)
+Refactoring the carfting system using Strategy Pattern
+
+It is evident that within the Inventory class, there was a lot of repetitive code and hard coding which prevented the modularity and extension possibilities for future buildable items. To fix this we used the strategy pattern where recipes would determine the buildability of the item (enough materials), consumption of items and the creation of the buildable item.
+
+1. Create an interface CraftingSystem
+Using an interface CraftingSystem will the the foundation of the stragies that we will implement. Each recipe (strategy) will have their own unique way of checking if the item is buildable, removing items if buildable and creating the item itself. This streamlines the process and abstracts the logic from inventory for SRP.
+
+2. Create BowRecipe and ShieldRecipe
+Creating classes for BowRecipe and ShieldRecipe will allow each strategy to handle the respective logic for the buildable item they represent.
+
+3. Refactor Inventory and Player
+checkBuildCriteria was refactored so that the parameters only took in a string for the entity and the EntityFactory. This will allow us to dynamically create the needed recipe and check if the build criteria is met. If it is then we will create the item and add it to the player's inventory.
+
+
 
 ## Task 2) Evolution of Requirements 👽
 
