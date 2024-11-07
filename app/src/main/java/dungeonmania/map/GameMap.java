@@ -13,11 +13,11 @@ import dungeonmania.entities.Overlappable;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.Portal;
 import dungeonmania.entities.PotionListener;
-import dungeonmania.entities.Switch;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.enemies.Destroyable;
 import dungeonmania.entities.enemies.Enemy;
 import dungeonmania.entities.enemies.ZombieToastSpawner;
+import dungeonmania.entities.logicSwitches.Switch;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 

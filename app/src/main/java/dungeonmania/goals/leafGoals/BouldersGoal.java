@@ -1,7 +1,7 @@
 package dungeonmania.goals.leafGoals;
 
 import dungeonmania.Game;
-import dungeonmania.entities.Switch;
+import dungeonmania.entities.logicSwitches.Switch;
 import dungeonmania.goals.Goal;
 
 public class BouldersGoal implements Goal {
