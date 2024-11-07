@@ -60,12 +60,14 @@ public class SwitchTests {
 
         // Push first boulder on switch
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_on"));
 
         // Push second boulder on switch. light turns on.
         res = dmc.tick(Direction.UP);
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_on"));
     }
@@ -89,6 +91,7 @@ public class SwitchTests {
 
         // Push boulder lightbulb on
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_on"));
     }
@@ -113,12 +116,14 @@ public class SwitchTests {
 
         // Push first boulder on switch. light turns on
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_on"));
 
         // Push second boulder on switch. light stays on.
         res = dmc.tick(Direction.UP);
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_on"));
     }
@@ -142,6 +147,7 @@ public class SwitchTests {
 
         // Push boulder lightbulb on
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_on"));
 
@@ -167,12 +173,14 @@ public class SwitchTests {
 
         // Push first boulder on switch. light turns on
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_on"));
 
         // Push second boulder on switch. light turns off.
         res = dmc.tick(Direction.UP);
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_on"));
     }
@@ -193,6 +201,7 @@ public class SwitchTests {
 
         // Push boulder lightbulb off
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_on"));
     }
@@ -217,12 +226,14 @@ public class SwitchTests {
 
         // Push first boulder on switch. light stays off
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_on"));
 
         // Push second boulder on switch. light stays off.
         res = dmc.tick(Direction.UP);
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(0, TestUtils.countEntityOfType(entities, "light_bulb_on"));
     }
@@ -246,6 +257,7 @@ public class SwitchTests {
 
         // Push boulder, one lightbulb on.
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_off"));
         assertEquals(1, TestUtils.countEntityOfType(entities, "light_bulb_on"));
     }
@@ -385,7 +397,7 @@ public class SwitchTests {
 
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("task2Dungeons/switch/switch_door/d_switch_switchDoorORTwoAdjacentSwitch",
+        DungeonResponse res = dmc.newGame("task2Dungeons/switch/switch_door/d_switch_twoAdjacentSwitchORSwitchDoor",
                 "task2Configs/switch/c_switch_defaultConfig");
 
         List<EntityResponse> entities = res.getEntities();
@@ -430,7 +442,7 @@ public class SwitchTests {
 
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("task2Dungeons/switch/switch_door/d_adjacentSwitchDoorXORSwitch_switch",
+        DungeonResponse res = dmc.newGame("task2Dungeons/switch/switch_door/d_switch_adjacentSwitchXORSwitchDoor",
                 "task2Configs/switch/c_switch_defaultConfig");
 
         List<EntityResponse> entities = res.getEntities();
@@ -514,7 +526,7 @@ public class SwitchTests {
 
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("task2Dungeons/switch/switch_door/d_switch_adjacentswitchCOANDSwitchDoor",
+        DungeonResponse res = dmc.newGame("task2Dungeons/switch/switch_door/d_switch_adjacentSwitchCOANDSwitchDoor",
                 "task2Configs/switch/c_switch_defaultConfig");
 
         List<EntityResponse> entities = res.getEntities();
@@ -604,7 +616,7 @@ public class SwitchTests {
                 "task2Configs/switch/c_switch_defaultConfig");
 
         List<EntityResponse> entities = res.getEntities();
-        assertEquals(1, TestUtils.countEntityOfType(entities, "switch_door"));
+        assertEquals(2, TestUtils.countEntityOfType(entities, "switch_door"));
 
         // Walk to each door, doors should be closed
         res = dmc.tick(Direction.DOWN);
@@ -657,6 +669,7 @@ public class SwitchTests {
 
         // Push boulder on switch, bomb should not explode
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "bomb"));
 
     }
@@ -679,13 +692,14 @@ public class SwitchTests {
 
         // Push boulder on switch. bomb should not explode.
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "bomb"));
 
         // Push bouler on second switch. Bomb should explode.
         res = dmc.tick(Direction.UP);
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(0, TestUtils.countEntityOfType(entities, "bomb"));
-
     }
 
     @Test
@@ -705,6 +719,7 @@ public class SwitchTests {
 
         // Push boulder on switch. bomb should explode.
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(0, TestUtils.countEntityOfType(entities, "bomb"));
     }
 
@@ -725,6 +740,7 @@ public class SwitchTests {
 
         // Push boulder to the right, bomb should explode.
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(0, TestUtils.countEntityOfType(entities, "bomb"));
 
     }
@@ -746,6 +762,7 @@ public class SwitchTests {
 
         // Push boulder on switch. Bomb should not explode.
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "bomb"));
 
     }
@@ -768,11 +785,13 @@ public class SwitchTests {
 
         // Push first boulder, bomb should not explode
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "bomb"));
 
         // Push second boulder, bomb should not explode
         res = dmc.tick(Direction.UP);
         res = dmc.tick(Direction.RIGHT);
+        entities = res.getEntities();
         assertEquals(1, TestUtils.countEntityOfType(entities, "bomb"));
 
     }

@@ -1,5 +1,6 @@
 package dungeonmania;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.UUID;
@@ -13,6 +14,8 @@ import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
 import dungeonmania.entities.enemies.ZombieToastSpawner;
+import dungeonmania.entities.logicSwitches.LogicalEntity;
+import dungeonmania.entities.logicSwitches.conductors.Conductor;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goals.Goal;
 import dungeonmania.map.GameMap;
@@ -41,6 +44,9 @@ public class Game {
 
     private int enemiesDefeatedCount = 0;
 
+    private List<LogicalEntity> logicalEntities = new ArrayList<>();
+    private List<Conductor> conductors = new ArrayList<>();
+
     public Game(String dungeonName) {
         this.name = dungeonName;
         this.map = new GameMap();
@@ -52,12 +58,20 @@ public class Game {
         map.init();
         this.tickCount = 0;
         player = map.getPlayer();
+        logicalEntities = map.getLogicalEntities();
+        conductors = map.getConductors();
         register(() -> player.onTick(tickCount), PLAYER_MOVEMENT, "potionQueue");
     }
 
     public Game tick(Direction movementDirection) {
         registerOnce(() -> player.move(this.getMap(), movementDirection), PLAYER_MOVEMENT, "playerMoves");
+        for (Conductor conductor : conductors) {
+            conductor.resetJustActivated();
+        }
         tick();
+        for (LogicalEntity logicalEntity : logicalEntities) {
+            logicalEntity.activate(map);
+        }
         return this;
     }
 

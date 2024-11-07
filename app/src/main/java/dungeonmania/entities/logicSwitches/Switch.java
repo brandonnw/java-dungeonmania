@@ -1,4 +1,4 @@
-package dungeonmania.entities.logicSwitches.conductors;
+package dungeonmania.entities.logicSwitches;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,13 @@ import dungeonmania.entities.Boulder;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Overlappable;
 import dungeonmania.entities.collectables.Bomb;
+import dungeonmania.entities.logicSwitches.conductors.Conductor;
+import dungeonmania.entities.logicSwitches.conductors.Wire;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
 public class Switch extends Entity implements Overlappable, Conductor {
-    private boolean activated;
+    private boolean activated = false;
     private List<Bomb> bombs = new ArrayList<>();
 
     // New fields for logic switch
@@ -58,7 +60,7 @@ public class Switch extends Entity implements Overlappable, Conductor {
 
     public void onMovedAway(GameMap map, Entity entity) {
         if (entity instanceof Boulder) {
-            activated = false;
+            deactivate(this);
         }
     }
 
@@ -67,7 +69,7 @@ public class Switch extends Entity implements Overlappable, Conductor {
         return activated;
     }
 
-    // New switch logic for logic switches 
+    // New switch logic for logic switches
 
     public void activate() {
         if (!activated) {
@@ -80,7 +82,9 @@ public class Switch extends Entity implements Overlappable, Conductor {
     @Override
     public void activateAdjacentSubscribers(Switch s) {
         for (Wire wire : wireSubscribers) {
-            wire.activate(s);
+            if (!wire.isActivated()) {
+                wire.activate(s);
+            }
         }
     }
 
@@ -93,7 +97,9 @@ public class Switch extends Entity implements Overlappable, Conductor {
     @Override
     public void deactivateAdjacentSubscribers(Switch s) {
         for (Wire wire : wireSubscribers) {
-            wire.deactivate(s);
+            if (wire.isActivated()) {
+                wire.deactivate(s);
+            }
         }
     }
 
@@ -110,6 +116,8 @@ public class Switch extends Entity implements Overlappable, Conductor {
     }
 
     public void subscribeAdjacentWire(Wire wire) {
-        wireSubscribers.add(wire);
+        if (wire != null) {
+            wireSubscribers.add(wire);
+        }
     }
 }

@@ -9,5 +9,5 @@ public interface LogicalEntity {
 
     public void activate(GameMap map);
 
-    public void addConductor(Conductor conductor);
+    public void subscribeAdjacentConductor(Conductor conductor);
 }

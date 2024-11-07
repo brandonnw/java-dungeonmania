@@ -25,4 +25,7 @@ public abstract class Door extends Entity implements Overlappable {
         open = true;
     }
 
+    public void close() {
+        open = false;
+    }
 }

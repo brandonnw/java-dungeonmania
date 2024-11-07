@@ -17,7 +17,13 @@ import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.enemies.Destroyable;
 import dungeonmania.entities.enemies.Enemy;
 import dungeonmania.entities.enemies.ZombieToastSpawner;
-import dungeonmania.entities.logicSwitches.conductors.Switch;
+import dungeonmania.entities.logicSwitches.LogicalEntity;
+import dungeonmania.entities.logicSwitches.Switch;
+import dungeonmania.entities.logicSwitches.LightBulb;
+import dungeonmania.entities.logicSwitches.SwitchDoor;
+import dungeonmania.entities.logicSwitches.BombSwitch;
+import dungeonmania.entities.logicSwitches.conductors.Conductor;
+import dungeonmania.entities.logicSwitches.conductors.Wire;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -25,6 +31,9 @@ public class GameMap {
     private Game game;
     private Map<Position, GraphNode> nodes = new HashMap<>();
     private Player player;
+
+    private List<LogicalEntity> logicalEntities = new ArrayList<>();
+    private List<Conductor> conductors = new ArrayList<>();
 
     /**
      * Initialise the game map
@@ -40,6 +49,44 @@ public class GameMap {
         initRegisterSpawners();
         initRegisterBombsAndSwitches();
         initPotionListeners();
+        initRegisterLogicalComponents();
+    }
+
+    private void initRegisterLogicalComponents() {
+        List<Switch> switches = getEntities(Switch.class);
+        List<Wire> wires = getEntities(Wire.class);
+        List<LightBulb> lightBulbs = getEntities(LightBulb.class);
+        List<SwitchDoor> switchDoors = getEntities(SwitchDoor.class);
+        List<BombSwitch> switchBombs = getEntities(BombSwitch.class);
+        conductors.addAll(switches);
+        conductors.addAll(wires);
+        logicalEntities.addAll(lightBulbs);
+        logicalEntities.addAll(switchDoors);
+        logicalEntities.addAll(switchBombs);
+
+        for (Switch s : switches) {
+            for (Wire w : wires) {
+                if (Position.isAdjacent(s.getPosition(), w.getPosition())) {
+                    s.subscribeAdjacentWire(w);
+                }
+            }
+        }
+
+        for (Wire w1 : wires) {
+            for (Wire w2 : wires) {
+                if (Position.isAdjacent(w1.getPosition(), w2.getPosition())) {
+                    w1.subscribeAdjacentWire(w2);
+                }
+            }
+        }
+
+        for (LogicalEntity logicalEntity : logicalEntities) {
+            for (Conductor conductor : conductors) {
+                if (Position.isAdjacent(((Entity) logicalEntity).getPosition(), ((Entity) conductor).getPosition())) {
+                    logicalEntity.subscribeAdjacentConductor((conductor));
+                }
+            }
+        }
     }
 
     private void initRegisterBombsAndSwitches() {
@@ -280,5 +327,13 @@ public class GameMap {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public List<LogicalEntity> getLogicalEntities() {
+        return this.logicalEntities;
+    }
+
+    public List<Conductor> getConductors() {
+        return this.conductors;
     }
 }

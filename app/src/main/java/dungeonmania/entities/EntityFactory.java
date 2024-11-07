@@ -7,7 +7,11 @@ import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.buildables.Shield;
 import dungeonmania.entities.collectables.*;
 import dungeonmania.entities.enemies.*;
-import dungeonmania.entities.logicSwitches.conductors.Switch;
+import dungeonmania.entities.logicSwitches.LightBulb;
+import dungeonmania.entities.logicSwitches.Switch;
+import dungeonmania.entities.logicSwitches.SwitchDoor;
+import dungeonmania.entities.logicSwitches.BombSwitch;
+import dungeonmania.entities.logicSwitches.conductors.Wire;
 import dungeonmania.map.GameMap;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.InvisibilityPotion;
@@ -19,6 +23,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.json.JSONObject;
+
+import dungeonmania.entities.logicSwitches.logicalStrategies.LogicalStrategyFactory;
 
 public class EntityFactory {
     private JSONObject config;
@@ -165,6 +171,11 @@ public class EntityFactory {
             return new Arrow(pos);
         case "bomb":
             int bombRadius = config.optInt("bomb_radius", Bomb.DEFAULT_RADIUS);
+            String logicalStrategyBomb = jsonEntity.optString("logic", null);
+            if (logicalStrategyBomb != null) {
+                return new BombSwitch(pos, bombRadius,
+                        LogicalStrategyFactory.createLogicalStrategy(logicalStrategyBomb));
+            }
             return new Bomb(pos, bombRadius);
         case "invisibility_potion":
             int invisibilityPotionDuration = config.optInt("invisibility_potion_duration",
@@ -188,6 +199,14 @@ public class EntityFactory {
             return new Key(pos, jsonEntity.getInt("key"));
         case "sun_stone":
             return new SunStone(pos);
+        case "wire":
+            return new Wire(pos);
+        case "light_bulb_off":
+            String logicalStrategyBulb = jsonEntity.optString("logic", null);
+            return new LightBulb(pos, LogicalStrategyFactory.createLogicalStrategy(logicalStrategyBulb));
+        case "switch_door":
+            String logicalStrategyDoor = jsonEntity.optString("logic", null);
+            return new SwitchDoor(pos, LogicalStrategyFactory.createLogicalStrategy(logicalStrategyDoor));
         default:
             throw new IllegalArgumentException(
                     String.format("Failed to recognise '%s' entity in EntityFactory", jsonEntity.getString("type")));

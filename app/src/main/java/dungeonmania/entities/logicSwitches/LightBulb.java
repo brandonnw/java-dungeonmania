@@ -27,17 +27,18 @@ public class LightBulb extends Entity implements LogicalEntity {
 
     @Override
     public void activate(GameMap map) {
-        if (logicalStrategy.isSatisfied(conductors)) {
+        if (logicalStrategy.isSatisfied(conductors, this)) {
             activated = true;
         } else {
             activated = false;
         }
 
         NameConverter.toSnakeCase(this);
+
     }
 
     @Override
-    public void addConductor(Conductor conductor) {
+    public void subscribeAdjacentConductor(Conductor conductor) {
         if (!conductors.contains(conductor) && conductor != null)
             conductors.add(conductor);
     }

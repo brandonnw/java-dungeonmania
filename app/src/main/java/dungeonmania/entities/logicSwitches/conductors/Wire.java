@@ -1,6 +1,8 @@
 package dungeonmania.entities.logicSwitches.conductors;
 
 import dungeonmania.entities.Entity;
+import dungeonmania.entities.logicSwitches.Switch;
+import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
 import java.util.ArrayList;
@@ -17,40 +19,40 @@ public class Wire extends Entity implements Conductor {
     }
 
     @Override
+    public boolean canMoveOnto(GameMap map, Entity entity) {
+        return true;
+    }
+
+    @Override
     public boolean isActivated() {
         return this.activated;
     }
 
     public void activate(Switch s) {
+        switchSubscribers.add(s);
         if (!activated) {
             justActivated = true;
         }
-        subscribeSwitch(s);
         activated = true;
-
         activateAdjacentSubscribers(s);
-    }
-
-    public void subscribeSwitch(Switch s) {
-        switchSubscribers.add(s);
     }
 
     @Override
     public void activateAdjacentSubscribers(Switch s) {
         for (Wire wire : wireSubscribers) {
-            wire.activate(s);
+            if (!wire.isActivated()) {
+                wire.activate(s);
+            }
         }
     }
 
     @Override
     public void deactivate(Switch s) {
-        unsubscribeSwitch(s);
-        verifyKeepActivated();
-        deactivateAdjacentSubscribers(s);
-    }
-
-    public void unsubscribeSwitch(Switch s) {
-        switchSubscribers.remove(s);
+        if (switchSubscribers.contains(s)) {
+            switchSubscribers.remove(s);
+            verifyKeepActivated();
+            deactivateAdjacentSubscribers(s);
+        }
     }
 
     public void verifyKeepActivated() {
@@ -62,7 +64,9 @@ public class Wire extends Entity implements Conductor {
     @Override
     public void deactivateAdjacentSubscribers(Switch s) {
         for (Wire wire : wireSubscribers) {
-            wire.deactivate(s);
+            if (wire.isActivated()) {
+                wire.deactivate(s);
+            }
         }
     }
 
@@ -76,7 +80,15 @@ public class Wire extends Entity implements Conductor {
         }
     }
 
-    public void subscribeAdjacentWire(Wire w) {
-        wireSubscribers.add(w);
+    public void subscribeAdjacentWire(Wire wire) {
+        if (!wireSubscribers.contains(wire)) {
+            wireSubscribers.add(wire);
+        }
+    }
+
+    public void subscribeAdjacentSwitch(Switch s) {
+        if (!switchSubscribers.contains(s)) {
+            switchSubscribers.add(s);
+        }
     }
 }

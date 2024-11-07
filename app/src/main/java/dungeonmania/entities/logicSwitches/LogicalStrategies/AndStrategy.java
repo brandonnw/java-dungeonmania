@@ -2,11 +2,12 @@ package dungeonmania.entities.logicSwitches.logicalStrategies;
 
 import java.util.List;
 
+import dungeonmania.entities.logicSwitches.LogicalEntity;
 import dungeonmania.entities.logicSwitches.conductors.Conductor;
 
 public class AndStrategy implements LogicalStrategy {
     @Override
-    public boolean isSatisfied(List<Conductor> conductors) {
+    public boolean isSatisfied(List<Conductor> conductors, LogicalEntity logicalEntity) {
         if (conductors.size() < 2) {
             return false;
         }

@@ -2,6 +2,8 @@ package dungeonmania.entities;
 
 import dungeonmania.map.GameMap;
 
+import java.util.List;
+
 import dungeonmania.entities.collectables.Key;
 import dungeonmania.entities.collectables.SunStone;
 import dungeonmania.entities.enemies.Spider;
@@ -21,7 +23,7 @@ public class DoorUsingKey extends Door {
         if (isOpen() || entity instanceof Spider) {
             return true;
         }
-        return (entity instanceof Player && (hasKey((Player) entity) || hasSunStone((Player) entity)));
+        return (entity instanceof Player && (hasKey((Player) entity) != null || hasSunStone((Player) entity)));
     }
 
     @Override
@@ -31,9 +33,9 @@ public class DoorUsingKey extends Door {
 
         Player player = (Player) entity;
         Inventory inventory = player.getInventory();
-        Key key = inventory.getFirst(Key.class);
+        Key key = hasKey(player);
 
-        if (hasKey(player)) {
+        if (key != null) {
             inventory.remove(key);
             open();
         } else if (hasSunStone(player)) {
@@ -41,11 +43,16 @@ public class DoorUsingKey extends Door {
         }
     }
 
-    private boolean hasKey(Player player) {
+    private Key hasKey(Player player) {
         Inventory inventory = player.getInventory();
-        Key key = inventory.getFirst(Key.class);
+        List<Key> keys = inventory.getEntities(Key.class);
 
-        return (key != null && key.getnumber() == number);
+        for (Key key : keys) {
+            if (key.getnumber() == number) {
+                return key;
+            }
+        }
+        return null;
     }
 
     private boolean hasSunStone(Player player) {

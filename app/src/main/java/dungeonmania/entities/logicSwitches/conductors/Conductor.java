@@ -1,5 +1,7 @@
 package dungeonmania.entities.logicSwitches.conductors;
 
+import dungeonmania.entities.logicSwitches.Switch;
+
 public interface Conductor {
     public boolean isActivated();
 
@@ -14,5 +16,4 @@ public interface Conductor {
     public void resetJustActivated();
 
     public void subscribeAdjacentWire(Wire w);
-
 }

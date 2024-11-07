@@ -19,4 +19,6 @@
 
 ## Week 9
 
-- List the tasks you completed this week here
+- Task 2a
+- Task 1f: More refactoring
+- Task 2f: Implemented all of logic switches
