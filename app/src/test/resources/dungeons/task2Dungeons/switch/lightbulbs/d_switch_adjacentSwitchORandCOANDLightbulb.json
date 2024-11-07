@@ -1,0 +1,34 @@
+{
+    "entities": [
+        {
+            "x": 1,
+            "y": 1,
+            "type": "player"
+        },
+        {
+            "x": 2,
+            "y": 1,
+            "type": "boulder"
+        },
+        {
+            "x": 3,
+            "y": 1,
+            "type": "switch"
+        },
+        {
+            "x": 4,
+            "y": 1,
+            "type": "light_bulb_off",
+            "logic": "co_and"
+        },
+        {
+            "x": 3,
+            "y": 0,
+            "type": "light_bulb_off",
+            "logic": "or"
+        }
+    ],
+    "goal-condition": {
+        "goal": "exit"
+    }
+}
