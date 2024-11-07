@@ -14,6 +14,9 @@ public class Switch extends Entity implements Overlappable, Conductor {
     private boolean activated;
     private List<Bomb> bombs = new ArrayList<>();
 
+    // New fields for logic switch
+    private boolean justActivated = false;
+
     public Switch(Position position) {
         super(position.asLayer(Entity.ITEM_LAYER));
     }
@@ -58,8 +61,36 @@ public class Switch extends Entity implements Overlappable, Conductor {
         }
     }
 
+    @Override
     public boolean isActivated() {
         return activated;
+    }
+
+    // New switch logic for logic switches 
+
+    @Override
+    public void turnOff() {
+
+    }
+
+    @Override
+    public void turnOn() {
+
+    }
+
+    @Override
+    public boolean justActivated() {
+        return justActivated;
+    }
+
+    @Override
+    public void updateJustActivated() {
+
+    }
+
+    @Override
+    public void addSubscriber(Conductor conductor) {
+
     }
 
 }
