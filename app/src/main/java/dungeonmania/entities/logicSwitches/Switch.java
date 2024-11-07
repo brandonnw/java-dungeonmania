@@ -74,11 +74,11 @@ public class Switch extends Entity implements Overlappable, Conductor {
             justActivated = true;
         }
         activated = true;
-        activateAdjacentSubscriber(this);
+        activateAdjacentSubscribers(this);
     }
 
     @Override
-    public void activateAdjacentSubscriber(Switch s) {
+    public void activateAdjacentSubscribers(Switch s) {
         for (Wire wire : subscribers) {
             wire.activate(s);
         }
@@ -87,11 +87,11 @@ public class Switch extends Entity implements Overlappable, Conductor {
     @Override
     public void deactivate(Switch s) {
         activated = false;
-        deactivateAdjacentSubscriber(s);
+        deactivateAdjacentSubscribers(s);
     }
 
     @Override
-    public void deactivateAdjacentSubscriber(Switch s) {
+    public void deactivateAdjacentSubscribers(Switch s) {
         for (Wire wire : subscribers) {
             wire.deactivate(s);
         }
