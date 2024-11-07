@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
-import dungeonmania.entities.logicSwitches.Switch;
+import dungeonmania.entities.logicSwitches.conductors.Switch;
 import dungeonmania.map.GameMap;
 
 public class Bomb extends Collectable {

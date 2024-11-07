@@ -1,4 +1,4 @@
-package dungeonmania.entities.logicSwitches;
+package dungeonmania.entities.logicSwitches.conductors;
 
 import java.util.ArrayList;
 import java.util.List;

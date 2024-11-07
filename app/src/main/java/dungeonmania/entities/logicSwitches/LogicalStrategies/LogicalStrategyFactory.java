@@ -1,4 +1,4 @@
-package dungeonmania.entities.logicSwitches.LogicalStrategies;
+package dungeonmania.entities.logicSwitches.logicalStrategies;
 
 public class LogicalStrategyFactory {
     public static LogicalStrategy createLogicalStrategy(String rule) {

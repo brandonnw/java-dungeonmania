@@ -1,8 +1,9 @@
-package dungeonmania.entities.logicSwitches.LogicalStrategies;
+package dungeonmania.entities.logicSwitches.logicalStrategies;
 
 import java.util.List;
-import dungeonmania.entities.logicSwitches.Conductor;
+
+import dungeonmania.entities.logicSwitches.conductors.Conductor;
 
 public interface LogicalStrategy {
-    public boolean isActivated(List<Conductor> conductors);
+    public boolean isSatisfied(List<Conductor> conductors);
 }

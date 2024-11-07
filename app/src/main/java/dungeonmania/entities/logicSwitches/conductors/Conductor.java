@@ -1,4 +1,4 @@
-package dungeonmania.entities.logicSwitches;
+package dungeonmania.entities.logicSwitches.conductors;
 
 public interface Conductor {
     public boolean isActivated();

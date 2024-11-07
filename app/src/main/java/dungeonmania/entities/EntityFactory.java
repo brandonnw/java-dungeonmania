@@ -7,7 +7,7 @@ import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.buildables.Shield;
 import dungeonmania.entities.collectables.*;
 import dungeonmania.entities.enemies.*;
-import dungeonmania.entities.logicSwitches.Switch;
+import dungeonmania.entities.logicSwitches.conductors.Switch;
 import dungeonmania.map.GameMap;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.InvisibilityPotion;
@@ -183,7 +183,7 @@ public class EntityFactory {
         case "spider":
             return buildSpider(pos);
         case "door":
-            return new Door(pos, jsonEntity.getInt("key"));
+            return new DoorUsingKey(pos, jsonEntity.getInt("key"));
         case "key":
             return new Key(pos, jsonEntity.getInt("key"));
         case "sun_stone":

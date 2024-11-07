@@ -1,4 +1,4 @@
-package dungeonmania.entities.logicSwitches;
+package dungeonmania.entities.logicSwitches.conductors;
 
 import dungeonmania.entities.Entity;
 import dungeonmania.util.Position;
