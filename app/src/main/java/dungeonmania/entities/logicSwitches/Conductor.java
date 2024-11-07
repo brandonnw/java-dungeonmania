@@ -3,13 +3,15 @@ package dungeonmania.entities.logicSwitches;
 public interface Conductor {
     public boolean isActivated();
 
-    public void turnOff();
+    public void deactivate(Switch s);
 
-    public void turnOn();
-
-    public void addSubscriber(Conductor conductor);
+    public void subscribe(Wire wire);
 
     public boolean justActivated();
 
-    public void updateJustActivated();
+    public void resetJustActivated();
+
+    public void activateAdjacentSubscriber(Switch s);
+
+    public void deactivateAdjacentSubscriber(Switch s);
 }
