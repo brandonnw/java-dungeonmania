@@ -1,0 +1,65 @@
+package dungeonmania.entities.logicSwitches;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import dungeonmania.entities.Boulder;
+import dungeonmania.entities.Entity;
+import dungeonmania.entities.Overlappable;
+import dungeonmania.entities.collectables.Bomb;
+import dungeonmania.map.GameMap;
+import dungeonmania.util.Position;
+
+public class Switch extends Entity implements Overlappable, Conductor {
+    private boolean activated;
+    private List<Bomb> bombs = new ArrayList<>();
+
+    public Switch(Position position) {
+        super(position.asLayer(Entity.ITEM_LAYER));
+    }
+
+    public void subscribe(Bomb b) {
+        bombs.add(b);
+    }
+
+    public void subscribe(Bomb bomb, GameMap map) {
+        bombs.add(bomb);
+        if (activated) {
+            activateBombs(map);
+        }
+    }
+
+    public void unsubscribe(Bomb b) {
+        bombs.remove(b);
+    }
+
+    @Override
+    public boolean canMoveOnto(GameMap map, Entity entity) {
+        return true;
+    }
+
+    @Override
+    public void onOverlap(GameMap map, Entity entity) {
+        if (entity instanceof Boulder) {
+            activated = true;
+            activateBombs(map);
+        }
+    }
+
+    public void activateBombs(GameMap map) {
+        for (Bomb b : bombs) {
+            b.activate(map);
+        }
+    }
+
+    public void onMovedAway(GameMap map, Entity entity) {
+        if (entity instanceof Boulder) {
+            activated = false;
+        }
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+}
