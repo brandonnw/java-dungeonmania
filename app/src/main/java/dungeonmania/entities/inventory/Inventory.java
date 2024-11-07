@@ -8,9 +8,12 @@ import dungeonmania.entities.Entity;
 import dungeonmania.entities.EntityFactory;
 import dungeonmania.entities.buildables.Bow;
 import dungeonmania.entities.buildables.BowRecipe;
+import dungeonmania.entities.buildables.MidnightArmourRecipe;
+import dungeonmania.entities.buildables.SceptreRecipe;
 import dungeonmania.entities.buildables.ShieldRecipe;
 import dungeonmania.entities.collectables.Sword;
 import dungeonmania.entities.collectables.Useable;
+import dungeonmania.map.GameMap;
 
 public class Inventory {
     private List<InventoryItem> items = new ArrayList<>();
@@ -24,10 +27,12 @@ public class Inventory {
         items.remove(item);
     }
 
-    public List<String> getBuildables() {
+    public List<String> getBuildables(GameMap map) {
         List<String> result = new ArrayList<>();
         CraftingSystem bowRecipe = new BowRecipe();
         CraftingSystem shieldRecipe = new ShieldRecipe();
+        CraftingSystem sceptreRecipe = new SceptreRecipe();
+        CraftingSystem midnightArmourRecipe = new MidnightArmourRecipe(map);
 
         if (bowRecipe.canBuild(this)) {
             result.add("bow");
@@ -35,10 +40,16 @@ public class Inventory {
         if (shieldRecipe.canBuild(this)) {
             result.add("shield");
         }
+        if (sceptreRecipe.canBuild(this)) {
+            result.add("sceptre");
+        }
+        if (midnightArmourRecipe.canBuild(this)) {
+            result.add("midnight_armour");
+        }
         return result;
     }
 
-    public InventoryItem checkBuildCriteria(String entity, EntityFactory entityFactory) {
+    public InventoryItem checkBuildCriteria(String entity, EntityFactory entityFactory, GameMap map) {
         switch (entity) {
         case "bow":
             CraftingSystem bowRecipe = new BowRecipe();
@@ -53,8 +64,21 @@ public class Inventory {
                 shieldRecipe.consumeItems(this);
                 return shieldRecipe.build(entityFactory);
             }
-        default:
             break;
+        case "sceptre":
+            CraftingSystem sceptreRecipe = new SceptreRecipe();
+            if (sceptreRecipe.canBuild(this)) {
+                sceptreRecipe.consumeItems(this);
+                return sceptreRecipe.build(entityFactory);
+            }
+            break;
+        case "midnight_armour":
+            CraftingSystem midnightArmourRecipe = new MidnightArmourRecipe(map);
+            if (midnightArmourRecipe.canBuild(this)) {
+                midnightArmourRecipe.consumeItems(this);
+                return midnightArmourRecipe.build(entityFactory);
+            }
+        default:
         }
         return null;
     }

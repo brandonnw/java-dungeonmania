@@ -6,6 +6,7 @@ import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
 import dungeonmania.battles.Battleable;
 import dungeonmania.entities.collectables.Bomb;
+import dungeonmania.entities.collectables.SunStone;
 import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.Useable;
 import dungeonmania.entities.collectables.potions.Potion;
@@ -46,12 +47,12 @@ public class Player extends Entity implements Battleable, Overlappable {
         return inventory.getWeapon();
     }
 
-    public List<String> getBuildables() {
-        return inventory.getBuildables();
+    public List<String> getBuildables(GameMap map) {
+        return inventory.getBuildables(map);
     }
 
-    public boolean build(String entity, EntityFactory factory) {
-        InventoryItem item = inventory.checkBuildCriteria(entity, factory);
+    public boolean build(String entity, EntityFactory factory, GameMap map) {
+        InventoryItem item = inventory.checkBuildCriteria(entity, factory, map);
         if (item == null)
             return false;
         return inventory.add(item);
@@ -83,7 +84,7 @@ public class Player extends Entity implements Battleable, Overlappable {
     }
 
     public boolean pickUp(Entity item) {
-        if (item instanceof Treasure)
+        if (item instanceof Treasure || item instanceof SunStone)
             collectedTreasureCount++;
         return inventory.add((InventoryItem) item);
     }

@@ -8,11 +8,12 @@ import dungeonmania.entities.inventory.Inventory;
 import dungeonmania.entities.inventory.InventoryItem;
 
 public class BowRecipe implements CraftingSystem {
+    private static final int WOOD_REQ = 1;
     private static final int ARROW_REQ = 3;
 
     @Override
     public boolean canBuild(Inventory inventory) {
-        return inventory.count(Wood.class) >= 1 && inventory.count(Arrow.class) >= 3;
+        return inventory.count(Wood.class) >= WOOD_REQ && inventory.count(Arrow.class) >= ARROW_REQ;
     }
 
     @Override

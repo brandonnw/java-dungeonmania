@@ -38,7 +38,8 @@ public class BattleFacade {
             playerBuff = player.applyBuff(playerBuff);
         } else {
             for (InventoryItem item : player.getInventory().getEntities(InventoryItem.class)) {
-                if (item instanceof Bow || item instanceof Shield || item instanceof Sword) {
+                if (item instanceof Bow || item instanceof Shield || item instanceof Sword
+                        || item instanceof MidnightArmour) {
                     playerBuff = ((Buffable) item).applyBuff(playerBuff);
                     battleItems.add(item);
                     ((Useable) item).use(game);
