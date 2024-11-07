@@ -7,6 +7,16 @@ import dungeonmania.entities.logicSwitches.conductors.Conductor;
 public class AndStrategy implements LogicalStrategy {
     @Override
     public boolean isSatisfied(List<Conductor> conductors) {
-        return false;
+        if (conductors.size() < 2) {
+            return false;
+        }
+
+        for (Conductor conductor : conductors) {
+            if (!conductor.isActivated()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

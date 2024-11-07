@@ -98,7 +98,7 @@ public class Switch extends Entity implements Overlappable, Conductor {
     }
 
     @Override
-    public boolean justActivated() {
+    public boolean getJustActivated() {
         return this.justActivated;
     }
 

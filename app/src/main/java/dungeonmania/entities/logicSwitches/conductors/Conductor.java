@@ -9,7 +9,7 @@ public interface Conductor {
 
     public void deactivateAdjacentSubscribers(Switch s);
 
-    public boolean justActivated();
+    public boolean getJustActivated();
 
     public void resetJustActivated();
 

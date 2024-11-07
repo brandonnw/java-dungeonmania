@@ -66,7 +66,7 @@ public class Wire extends Entity implements Conductor {
         }
     }
 
-    public boolean justActivated() {
+    public boolean getJustActivated() {
         return this.justActivated;
     }
 
