@@ -2,6 +2,8 @@ package dungeonmania.entities;
 
 import dungeonmania.Game;
 import dungeonmania.entities.buildables.Bow;
+import dungeonmania.entities.buildables.MidnightArmour;
+import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.buildables.Shield;
 import dungeonmania.entities.collectables.*;
 import dungeonmania.entities.enemies.*;
@@ -122,6 +124,18 @@ public class EntityFactory {
         return new Shield(shieldDurability, shieldDefence);
     }
 
+    public Sceptre buildSceptre() {
+        int sceptreDurability = Sceptre.DEFAULT_DURABILITY;
+        int sceptreDuration = config.optInt("mind_control_duration");
+        return new Sceptre(sceptreDurability, sceptreDuration);
+    }
+
+    public MidnightArmour buildMidnightArmour() {
+        int midnightArmourAttack = config.optInt("midnight_armour_attack");
+        int midnightArmourDefence = config.optInt("midnight_armour_defence");
+        return new MidnightArmour(midnightArmourAttack, midnightArmourDefence);
+    }
+
     private Entity constructEntity(JSONObject jsonEntity, JSONObject config) {
         Position pos = new Position(jsonEntity.getInt("x"), jsonEntity.getInt("y"));
 
@@ -171,6 +185,8 @@ public class EntityFactory {
             return new Door(pos, jsonEntity.getInt("key"));
         case "key":
             return new Key(pos, jsonEntity.getInt("key"));
+        case "sun_stone":
+            return new SunStone(pos);
         default:
             throw new IllegalArgumentException(
                     String.format("Failed to recognise '%s' entity in EntityFactory", jsonEntity.getString("type")));

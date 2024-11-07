@@ -443,29 +443,147 @@ For all the above tests, new config files, and subequent dungeon layouts will be
 
 - Will have to refactor interact method to also take in GameMap map as an argument. This is important for the interact method in ZombieToastSpawner.java to ensure the code doesn't violate the law of demeter.
 
-### Choice 1 (Insert choice)
+### Choice 1 (Sun Stone & More Buildables)
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T3/teams/W15C_KINGFISHER/assignment-ii/-/merge_requests/15)
+Requirements Engineering. Analyse the task requirements, including the technical and product specifications. If you need to, make some assumptions and document these in your pair blog post.
 
 **Assumptions**
+Sun Stone (Collectable):
+A special form of treasure, hard and treasuable. It can be picked up by the player. Can be used to open doors. Can also be used interchangeably with treasure or keys when building entities, though if the player possesses enough treasure or keys those should be preferred when crafting. But it cannot be used to bribe mercenaries or assassins. Since it is classed as treasure it counts towards the treasure goal. When used for opening doors, or when replacing another material such as a key or treasure in building entities, it is retained after use. When used as a listed ingredient in crafting, it is consumed.
+    - Type of treasure item
+    - Type of key item
+    - Is a collectable
+    - Can be used as an alternative crafting item
+    - If treasure or keys is enough for crafting, they will be used instead
+    - Cannot be used to bribe mercenaries or assassins
+    - Counts towards treasure goal
 
-[Any assumptions made]
+Sceptre (Buildable):
+Can be crafted with (1 wood OR 2 arrows) + (1 key OR 1 treasure) + (1 sun stone). A character with a sceptre does not need to bribe mercenaries or assassins to become allies, as they can use the sceptre to control their minds without any distance constraint. But the effects only last for a certain number of ticks. This number of ticks begins counting down immediately after the sceptre is used.
+    Example
+    In a case where the sceptre's duration is 2 ticks:
+        Tick 1 - player's turn: Player mind controls enemy. 
+        Tick 1 - enemy's turn: Enemy is mind controlled. 
+        Tick 2 - player's turn: Player moves. 
+        Tick 2 - enemy's turn: Enemy is mind controlled. 
+        Tick 3 - player's turn: Player moves. 
+        Tick 3 - enemy's turn: Enemy is no longer mind controlled.
+
+    - Buildable entity
+        - (1 wood OR 2 arrows) + (1 key OR 1 treasure) + (1 sun stone)
+    - Mind control and bribery work the same (Allied movement)
+    - Mind controlled enemies have a set duration (bribery does not)
+    - Mind controlling has no distance contraints
+    - Mind control tick starts on the interact tick
+
+Midnight Armour (Buildable):
+Can be crafted with (1 sword + 1 sun stone) if there are no zombies currently in the dungeon. Midnight armour provides extra attack damage as well as protection, and it lasts forever.
+    - Buildable entity
+        - (1 sword + 1 sun stone)
+        - Only if there are no zombies in dungeon
+    - Extra attack damage (not damage multiplier) and protection (not damage reducer)
+    - Infinite durability
+
+Detailed Design. In your pair blog post, plan out a detailed design for the task. This should include:
+    1. What fields/methods you will need to add/change in a class
+    2. What new classes/packages you will need to create
 
 **Design**
+SunStone (New Class)
+    - Extends Treasure
+    - Fields:
+        -
+    - Methods:
+        -
+
+Sceptre (New Class)
+    - Extends Buildable
+    - Fields:
+        - int: duration
+        - int: durability (Inherited from superclass - 1 since only one-time use)
+    - Methods:
+        - Override: use
+
+Midnight Armour (New Class)
+    - Extends Buildable
+    - Implements Buffable
+    - Fields:
+        - double: attack
+        - double: defence
+        - int: durability (MaxInt)
+    - Methods:
+        - Override applyBuff
+
+Inventory (Change methods)
+    - Methods:
+        - getbuildables && checkBuildCriteria
+            - Add code logic for new buildable items
+
+Door (Add method) {
+    - hasSunStone:
+        - Checks players inventory for SunStone
+}
 
 [Design]
 
+Design Review. Have your partner review the design, and go back and iterate on the design if needed.
 **Changes after review**
 
 [Design review/Changes made]
 
+Create a Test List. Once the design is approved, write a test list (a list of all the tests you will write) for the task. Map out each of the conceptual cases you want to test. This can be written in your blog post, or if you want make function stubs for JUnit tests and put up a Merge Request (link in your blog).
 **Test list**
+1. Sunstone Tests
+    Valid collectable:
+        Test 1.1: Player can pick up a sunstone and it appears in their inventory.
 
-[Test List]
+    Valid key:
+        Test 1.2: Player can open a locked door with a sunstone without it being consumed.
+        Test 1.3: Player with both a sunstone and correct key can open a locked door. Entity used is undefined. Though for simplicity, correct key will be taken over sunstone
 
-**Other notes**
+    Sunstone in Crafting:
+        Test 1.4: Sunstone can act as a substitute for a key or treasure when crafting a buildable.
+        Test 1.5: If both a sunstone and a treasure/key are available, treasure/key is consumed over the sunstone for crafting.
+        Test: If sunstone is required as a core ingredient (Crafting sceptre or midnight armour), it is consumed. (Tested in other classes)
 
-[Any other notes]
+    Sunstone as treasure:
+        Test 1.6: Sunstone counts towards treasure goal.
+
+2. Sceptre Tests
+    Crafting Sceptre:
+        Test 2.1: Sceptre is crafted using (1 wood OR 2 arrows) + (1 key OR 1 treasure) + 1 sunstone.
+
+    Mind Control Duration:
+        Test 2.2: Use sceptre to mind control a mercenary. 
+        Test 2.3: Verify that the mercenary exhibits allied movement for the specified duration.
+
+    Mind Control Constraints
+        Test 2.4: Player can mind control a mercenary from any distance when using the sceptre.
+
+3. Midnight Armour Tests
+    Crafting Midnight Armour
+        Test 3.1: Player can craft midnight armour with (1 sword + 1 sunstone) if there are no zombies in the dungeon.
+        Test 3.2: If there is at least one zombie in the dungeon, the player cannot craft midnight armour, and an InvalidActionException is thrown.
+
+    Midnight Armour Attribute
+        Test 3.3: Armour receives correct additional attack and defence bonuses as specified in the configuration file.
+
+Test List Review. Have someone else in your team review the test list to make sure the test cases all make sense and cover the input space.
+
+Create the Skeleton. Stub out anything you need to with class/method prototypes.
+
+Write the tests, which should be failing assertions currently since the functionality hasn't been implemented.
+
+Development. Implement the functionality so that your tests pass.
+Run a usability test (check your functionality works on the frontend).
+Where needed, refactor your code to improve the style and design while keeping the tests passing.
+Put up a merge request with your changes into main. The CI should be passing. The merge request should have a meaningful title and contain a description of the changes you have made. In most cases you should just be able to link them to your design/test list blog.
+
+Code Review from your partner, iterate where needed then they should approve the MR.
+
+NOTE: IF DRYRUN DOESN'T WORK CHECK IF MAYBE ITS BECAUSE RESPONSEBUILDER WAS CHANGED. SINCE GETBUILDABLES SIGNATURE WAS CHANGED TO TAKE IN GAMEMAP MAP
+
 
 ### Choice 2 (Insert choice)
 

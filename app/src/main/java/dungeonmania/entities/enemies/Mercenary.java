@@ -6,6 +6,7 @@ import dungeonmania.entities.Entity;
 import dungeonmania.entities.Interactable;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.PotionListener;
+import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.InvisibilityPotion;
@@ -15,6 +16,7 @@ import dungeonmania.entities.enemies.enemyMovement.HostileMovement;
 import dungeonmania.entities.enemies.enemyMovement.MovementStrategy;
 import dungeonmania.entities.enemies.enemyMovement.RandomMovement;
 import dungeonmania.entities.enemies.enemyMovement.RunAwayMovement;
+import dungeonmania.entities.inventory.Inventory;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
@@ -30,6 +32,9 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
     private double allyAttack;
     private double allyDefence;
     private boolean allied = false;
+    private boolean mindControlled = false;
+    private int duration = 0;
+    private int count = 0;
 
     private MovementStrategy movementType;
 
@@ -59,7 +64,12 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
      * @param player
      * @return
      */
-    private boolean canBeBribed(Player player) {
+    private boolean canBeBribed(Player player, Inventory inventory) {
+        if (player.countEntityOfType(Sceptre.class) > 0) {
+            duration = inventory.getFirst(Sceptre.class).getDuration();
+            return true;
+        }
+
         return bribeRadius >= 0 && player.countEntityOfType(Treasure.class) >= bribeAmount;
     }
 
@@ -77,7 +87,14 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
     public void interact(Player player, Game game) {
         allied = true;
         movementType = new AlliedMovement();
-        bribe(player);
+
+        if (player.countEntityOfType(Sceptre.class) > 0) {
+            Sceptre sceptre = player.getInventory().getFirst(Sceptre.class);
+            mindControlled = true;
+            sceptre.use(game);
+        } else {
+            bribe(player);
+        }
 
         if (Position.isAdjacent(player.getPosition(), getPosition())) {
             ((AlliedMovement) movementType).setAdjacentToPlayer(true);
@@ -87,12 +104,22 @@ public class Mercenary extends Enemy implements Interactable, PotionListener {
 
     @Override
     public void move(Game game) {
+        if (mindControlled) {
+            count++;
+            if (count >= duration) {
+                movementType = new HostileMovement();
+                count = 0;
+                duration = 0;
+                allied = false;
+                mindControlled = false;
+            }
+        }
         movementType.move(game, this);
     }
 
     @Override
     public boolean isInteractable(Player player) {
-        return !allied && canBeBribed(player);
+        return !allied && canBeBribed(player, player.getInventory());
     }
 
     @Override
