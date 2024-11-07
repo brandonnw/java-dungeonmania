@@ -25,15 +25,18 @@ public class Wire extends Entity implements Conductor {
         if (!activated) {
             justActivated = true;
         }
-        switchSubscribers.add(s);
+        subscribeSwitch(s);
         activated = true;
 
         activateAdjacentSubscribers(s);
     }
 
+    public void subscribeSwitch(Switch s) {
+        switchSubscribers.add(s);
+    }
+
     @Override
     public void activateAdjacentSubscribers(Switch s) {
-        switchSubscribers.add(s);
         for (Wire wire : wireSubscribers) {
             wire.activate(s);
         }
@@ -41,31 +44,39 @@ public class Wire extends Entity implements Conductor {
 
     @Override
     public void deactivate(Switch s) {
-        switchSubscribers.remove(s);
+        unsubscribeSwitch(s);
+        verifyKeepActivated();
         deactivateAdjacentSubscribers(s);
+    }
+
+    public void unsubscribeSwitch(Switch s) {
+        switchSubscribers.remove(s);
+    }
+
+    public void verifyKeepActivated() {
+        if (switchSubscribers.size() == 0) {
+            activated = false;
+        }
     }
 
     @Override
     public void deactivateAdjacentSubscribers(Switch s) {
-        switchSubscribers.add(s);
         for (Wire wire : wireSubscribers) {
-            wire.activate(s);
+            wire.deactivate(s);
         }
     }
 
-    public void subscribe(Wire wire) {
-
-    }
-
     public boolean justActivated() {
-        return false;
+        return this.justActivated;
     }
 
     public void resetJustActivated() {
-
+        if (justActivated) {
+            justActivated = false;
+        }
     }
 
-    public void deactivateAdjacentSubscriber() {
-
+    public void subscribeAdjacentWire(Wire w) {
+        wireSubscribers.add(w);
     }
 }

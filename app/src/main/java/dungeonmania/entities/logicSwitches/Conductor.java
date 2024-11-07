@@ -9,10 +9,10 @@ public interface Conductor {
 
     public void deactivateAdjacentSubscribers(Switch s);
 
-    public void subscribe(Wire wire);
-
     public boolean justActivated();
 
     public void resetJustActivated();
+
+    public void subscribeAdjacentWire(Wire w);
 
 }

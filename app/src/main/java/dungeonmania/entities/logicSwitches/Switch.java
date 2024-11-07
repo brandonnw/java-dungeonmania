@@ -16,7 +16,7 @@ public class Switch extends Entity implements Overlappable, Conductor {
 
     // New fields for logic switch
     private boolean justActivated = false;
-    private List<Wire> subscribers = new ArrayList<>();
+    private List<Wire> wireSubscribers = new ArrayList<>();
 
     public Switch(Position position) {
         super(position.asLayer(Entity.ITEM_LAYER));
@@ -45,7 +45,7 @@ public class Switch extends Entity implements Overlappable, Conductor {
     @Override
     public void onOverlap(GameMap map, Entity entity) {
         if (entity instanceof Boulder) {
-            activated = true;
+            activate();
             activateBombs(map);
         }
     }
@@ -79,7 +79,7 @@ public class Switch extends Entity implements Overlappable, Conductor {
 
     @Override
     public void activateAdjacentSubscribers(Switch s) {
-        for (Wire wire : subscribers) {
+        for (Wire wire : wireSubscribers) {
             wire.activate(s);
         }
     }
@@ -92,14 +92,14 @@ public class Switch extends Entity implements Overlappable, Conductor {
 
     @Override
     public void deactivateAdjacentSubscribers(Switch s) {
-        for (Wire wire : subscribers) {
+        for (Wire wire : wireSubscribers) {
             wire.deactivate(s);
         }
     }
 
     @Override
     public boolean justActivated() {
-        return justActivated;
+        return this.justActivated;
     }
 
     @Override
@@ -109,8 +109,7 @@ public class Switch extends Entity implements Overlappable, Conductor {
         }
     }
 
-    @Override
-    public void subscribe(Wire wire) {
-        subscribers.add(wire);
+    public void subscribeAdjacentWire(Wire wire) {
+        wireSubscribers.add(wire);
     }
 }
