@@ -467,17 +467,67 @@ For all the above tests, new config files, and subequent dungeon layouts will be
 
 [Any other notes]
 
-### Choice 2 (Insert choice)
+
+### Choice 2 (Logic Switches (2f))
 
 [Links to your merge requests](/put/links/here)
 
 **Assumptions**
 
-[Any assumptions made]
+- The game requires logical conditions to be fulfilled for certain entities like doors and bombs to activate, based on nearby conductors
+- All switches will be created in inactive state as well as all the logical entities
+- Logical conditions follow OR, AND, XOR, and CO_AND logic types and need to be flexible to apply to different entities.
+- Logical conditions will be specified through the json object for creating a logical entity
+- Power sources (switches and wires) propagate power to nearby logical entities, which remain active as long as the power condition is satisfied.
+- In the tick that a switch is turned, its line of wires will also need to be deactivated
+- In the method for tick, it will now check the status of the logical entity. Specifically, it will check whether that entity should still be powered on or not, just to ensure that its status is updated according to the surrounding conductors.
+- If a new class for the logic bomb is to be created, and it exended the current bomb class, the EntityFactory code for the bomb case should be updated so that if it attempts to read a field for "logic", and gets null, it will create a normal bomb, other it creates a logic bomb.
 
 **Design**
 
-[Design]
+1. The design should split up the power and logic behaviour to maintain flexibility in the code. For instance, the main programme for this taskw ill be split into two sections, one being the code which handles the logic rules, and the other being the code that handles the behaviour of conductors and logical entities. 
+
+2. Firstly, considering the design for logic rules we will have a few patterns integrated.
+    - Factory pattern: This pattern will be implemented to create new instances of the different logic rules. 
+        Classes:
+            - LogicalRulesFactory.java
+    - Strategy pattern: This pattern will be implemented into the design of the different logical rules, by referring to them as strategies
+        Interfaces:
+            - LogicStrategy.java
+                - This interface will define a method which relates to the specific logic of each rule
+        Classes:
+            - OrStrategy.java
+            - AndStrategy.java
+            - XorStrategy.java
+            - CoAndStrategy.java
+
+3. Another key design will be the new classes and interfaces constructed for conductors. This incudes switches and wires. Since there is already a switch class implemented, we will simply be building off this class, but just adding the relevant logical entity logic into this current class. The design we will pursue includes:
+    - Interfaces
+        Conductor.java
+            - This interface will be implemented in the switch class and wire class since both entities are regarded as entities which supply current to logical entities. This interface will define methods which specify the behaviour for conductors.
+    - Classes
+        Switch.java
+            - Since a switch class already exists, it will be built off of by implementing the conductor interface and relevant methods.
+        Wire.java
+            - This is a new class we will have to make and it will implement the conductor interface. 
+
+4. The last major design choice to consider is the classes for the new logical entities, which includes light bulbs, switch doors, and the new type of bomb which implements logical rules. The main dilemma in this instance is the design choice for the new type of bomb. In this instance, a viable choice would be to refactor the bomb class by implementing a strategy pattern where a bomb interface is defined, and the switch bomb and normal bomb classes will implement it. Additionally, the switch door class and the current door class will also have some overlapping logic. In this case, Door.java can be refactored to now be an abstract class where each type of door extends it and implements its own behaviours, Here are the new classes and interfaces:
+    - Interfaces
+        LogicalEntities.java
+            - This interface is made to be implemented by all logical entities (light bulbs, switch doors, and switch bombs), and will specificy specific methods which pertain to behaviours which these logical entities should have. E.g., managing whether they are activated or not, as well as the conductors around them.
+        Door.java
+            - There is already a Door.java class to represent a standrd door which is opened through a key. However, this class will be changed to an abstract class, and the logic for the key opening door will be moved to a class which extends the abstract class and have its own logic. Additionally, the switch door class will extend this interface.
+    - Classes
+        LightBulb.java
+        SwitchBomb.java (extends Bomb.java)
+        SwitchDoor.java (extends Door.java interface)
+        KeyDoor.java (extends Door.java interface)
+
+5. When considering the overall logic of how we tie these classes together to allow them to function as logical entities powered by conductors, there are a few key design choices to consider. Firstly, recursion will have to be implemented when considering how we make conductors activate. Specifically, considering the case where a switch is activated, it will notify its cardinally adajacent conductors (listeners), and then those conductors will activate, and notify their adjacent neighbours etc. This logic will be key to allowing the chaining of conductor together to eventually power a logical entity. 
+
+Additionally, to compliment this logic there will have to be an observer/subscriber pattern similar to the way bombs currently track the behaviour of switches to know when to explode. This will ensure that the recursion logic stated above can be implemented correctly, as by each instance of a conductor having its own list of subscribers, it will be easier to know which other instances of conductors should be notified and therefore updated. 
+
+There will also have to be fields inside the classes for the logical entities which stores the sources of current (cardinally adjacent conductors). This will ensure that after every tick, the logical entitiy can check its sources to ensure its logical rule has been satisfied, or is still being satisfied, so it knows whether it should be on or not.
 
 **Changes after review**
 
@@ -485,11 +535,18 @@ For all the above tests, new config files, and subequent dungeon layouts will be
 
 **Test list**
 
-[Test List]
+- Or logical rule test
+- And logical rule test
+- Xor logical rule test
+- Coand logical rule test
+- Test that a light bulb turns on when logical rule is satisfied
+- Test that a switch door open when logical rule is satisfied
+- Test that a switch bomb explodes when logical rule is satisfied
+- Test that if a wire being powered by two switches, has one switch turned off, it should remain activated
 
 **Other notes**
 
-[Any other notes]
+- Since wires and switches do not implement the destroyable interface, when a bomb blows up it won't destroy the surrounding conductors. I think.
 
 ### Choice 3 (Insert choice) (If you have a 3rd member)
 
