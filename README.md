@@ -1,58 +1,103 @@
-# DungeonMania (COMP2511)
+# DungeonMania
 
-A Java-based dungeon crawler game engine developed for UNSW COMP2511. The project implements a fully functional backend game system where players navigate dungeons, interact with entities, and complete dynamic goals.
+A Java-based dungeon crawler game engine developed for UNSW COMP2511 OOP course. The project focuses on backend system design, object-oriented programming principles, and extensive automated testing of complex game mechanics.
 
-The focus of this project is on object-oriented design, game logic implementation, and automated testing of complex system behaviour.
+The game simulates a player navigating a dungeon, interacting with entities, completing goals, and engaging in combat and environmental interactions.
+
+Created in collaboration with another student.
 
 ---
 
 ## ✨ Features
 
-### Core Gameplay Engine
-- Fully functional dungeon game loop controlled via a central `DungeonManiaController`
-- Player movement in four directions with real-time state updates
-- Tick-based game progression system
-
-### Game Entities & Interactions
-- Interactive entities including:
-  - Boulders
-  - Floor switches
-  - Treasure
-  - Exits
-- Entity interaction system supporting collision and state changes
-- Dynamic world updates based on player actions
-
-### Goal System
-- Modular goal architecture supporting multiple win conditions:
-  - Exit goals
-  - Treasure collection goals
-  - Boulder/switch activation goals
-- Composite goal logic (AND/OR conditions)
-- Real-time goal evaluation after each game tick
-
-### Backend Design
-- Strong object-oriented architecture
-- Separation of concerns between controller, entities, and game logic
-- Extensible system designed for additional entities and mechanics
+### 🎮 Core Game Engine
+- Central `DungeonManiaController` managing all game state and logic
+- Tick-based game loop driving all actions and updates
+- Player movement system with directional input handling
+- Dynamic entity updates per game tick
 
 ---
 
-## Testing
+### 🧩 Entity System
+Supports a wide range of interactive entities including:
+- Player
+- Enemies (Spiders, Zombies, Mercenaries)
+- Items (Treasure, Weapons, Potions, Bombs)
+- Environmental objects (Walls, Switches, Boulders, Exits)
 
-This project includes a comprehensive suite of JUnit 5 automated tests validating full gameplay behaviour.
+Entities interact through a shared position-based world system, enabling collision, activation, and state changes.
 
-### What is tested:
-- Game state transitions after each tick
-- Player movement and collision handling
-- Entity interactions (e.g. pushing boulders, activating switches)
-- Goal completion logic and composite conditions
-- End-to-end gameplay scenarios using controller-level simulation
+---
 
-### Testing Approach
-- Built using JUnit 5 (Jupiter)
-- Tests are primarily integration/system tests rather than isolated unit tests
-- Entire game engine is exercised through `DungeonManiaController`
-- Example pattern:
-  ```java
-  dmc.newGame(...)
-  dmc.tick(Direction.RIGHT)
+### 🎯 Goal System
+- Modular goal architecture supporting multiple win conditions
+- Goals include:
+  - Exit goal completion
+  - Treasure collection
+  - Boulder + switch activation
+- Composite goal logic (AND/OR combinations)
+- Real-time evaluation after each game tick
+
+---
+
+### 💥 Combat System
+- Turn-based battle system triggered on entity collision
+- Supports multiple enemy types with configurable stats
+- Equipment modifiers:
+  - Sword (attack boost with durability)
+  - Shield (defence reduction of enemy damage)
+  - Bow (ranged/double-attack mechanics with durability)
+- Status effects:
+  - Invincibility potion (one-hit kill mechanic)
+  - Invisibility potion (stealth mechanics)
+- Ally system providing combat bonuses when mercenaries are recruited
+
+---
+
+### 💣 Bomb Mechanics
+- Bomb pickup and inventory management
+- Manual bomb placement using item interaction system
+- Explosion triggers based on switch activation rules:
+  - Cardinal adjacency (not diagonal)
+  - Active vs inactive switch states
+- Configurable explosion radius
+- Chain reaction behaviour for environmental destruction
+
+---
+
+## 🧪 Testing
+
+This project includes a comprehensive suite of **JUnit 5 integration and system tests**.
+
+### ✔️ Testing Coverage
+
+The test suite validates full gameplay behaviour, including:
+
+#### 🎯 Goals Testing
+- Exit, treasure, and boulder/switch goal completion
+- Composite goal evaluation over multiple game ticks
+
+#### ⚔️ Combat System Testing
+- Player vs enemy battle outcomes (win/loss conditions)
+- Round-by-round damage calculations
+- Weapon effects (sword, bow, shield)
+- Potion-based combat modifiers (invincibility, invisibility)
+- Ally-assisted combat scenarios
+
+#### 💣 Bomb System Testing
+- Bomb pickup and inventory behaviour
+- Bomb placement mechanics
+- Explosion triggering conditions (switch activation logic)
+- Explosion radius variations (radius 2, radius 10)
+- Environmental destruction rules
+
+#### 🧠 System-Level Testing Approach
+- Tests use full `DungeonManiaController` execution
+- Game state is validated through simulated player actions (`tick`, `interact`, `build`)
+- End-to-end scenarios verify complete game mechanics rather than isolated methods
+
+Example test pattern:
+```java
+dmc.newGame(...)
+dmc.tick(Direction.RIGHT)
+dmc.tick(itemId)
